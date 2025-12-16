@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Documentation - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1rem 1.25rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .method-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .method-table th {
+            background-color: #f1f5f9;
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            font-weight: 600;
+        }
+        
+        .method-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        
+        .method-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .code-keyword {
+            color: #c678dd;
+        }
+        
+        .code-function {
+            color: #61afef;
+        }
+        
+        .code-variable {
+            color: #e06c75;
+        }
+        
+        .code-string {
+            color: #98c379;
+        }
+        
+        .code-comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+        
+        .api-endpoint {
+            background-color: #e8f4fc;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .diagram-container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .file-tag {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-php {
+            background-color: #8892bf;
+        }
+        
+        .badge-html {
+            background-color: #e34f26;
+        }
+        
+        .badge-sql {
+            background-color: #336791;
+        }
+        
+        .flowchart {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-active {
+            background-color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background-color: #95a5a6;
+        }
+        
+        .note {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--warning-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning {
+            background-color: #ffebee;
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-cogs me-2"></i>System Administration Documentation</h1>
+            <p class="subtitle">Complete reference for admin panel, user management, and system workflows</p>
+            <div class="mt-3">
+                <span class="file-tag badge-php">PHP</span>
+                <span class="file-tag badge-html">HTML/CSS</span>
+                <span class="file-tag badge-sql">PostgreSQL</span>
+                <span class="file-tag" style="background-color: #f0db4f; color: #333;">JavaScript</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt me-2"></i>File Index
+                        </div>
+                        <div class="card-body p-0">
+                            <nav class="nav flex-column">
+                                <a class="nav-link active" href="#admin-php"><i class="fas fa-user-shield me-2"></i>Admin.php</a>
+                                <a class="nav-link" href="#logout-php"><i class="fas fa-sign-out-alt me-2"></i>logout.php</a>
+                                <a class="nav-link" href="#dashboard-php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard.php</a>
+                                <a class="nav-link" href="#exchange-handler"><i class="fas fa-exchange-alt me-2"></i>exchange_handler.php</a>
+                                <a class="nav-link" href="#login-handler"><i class="fas fa-sign-in-alt me-2"></i>login_handler.php</a>
+                                <a class="nav-link" href="#dashboard-backend"><i class="fas fa-server me-2"></i>dashboard_backend.php</a>
+                                <a class="nav-link" href="#config-php"><i class="fas fa-cog me-2"></i>config.php</a>
+                                <a class="nav-link" href="#material-php"><i class="fas fa-recycle me-2"></i>Material.php</a>
+                                <a class="nav-link" href="#database-schema"><i class="fas fa-database me-2"></i>Database Schema</a>
+                            </nav>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <i class="fas fa-info-circle me-2"></i>System Info
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Version:</strong> 2.1.0</p>
+                            <p><strong>Database:</strong> PostgreSQL 13+</p>
+                            <p><strong>PHP Version:</strong> 7.4+</p>
+                            <p><strong>Auth Type:</strong> Session-based</p>
+                            <hr>
+                            <p class="mb-1"><span class="status-indicator status-active"></span> Admin Panel: Active</p>
+                            <p class="mb-1"><span class="status-indicator status-active"></span> User Management: Active</p>
+                            <p class="mb-1"><span class="status-indicator status-active"></span> Exchange System: Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Admin.php Section -->
+                <section id="admin-php" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-user-shield me-2"></i>Admin.php - Admin Class
+                            </div>
+                            <span class="file-tag badge-php">PHP Class</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="lead">This file implements the <strong>Admin</strong> class, which provides all administrative actions for managing users, drivers, and basic statistics for the system. It interacts with the database using the <code>Database</code> class.</p>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-list-alt me-2"></i>Main Functions Provided</h5>
+                            <table class="method-table">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Method</th>
+                                        <th width="70%">Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>getAllUsers()</code></td>
+                                        <td>Retrieves all users from the database</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>searchUsers($term)</code></td>
+                                        <td>Searches users by username or email</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>updateUser(...)</code></td>
+                                        <td>Updates user details and returns a status</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>deleteUser($user_id)</code></td>
+                                        <td>Deletes a user from the system</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>getStatistics()</code></td>
+                                        <td>Returns summary statistics (users, points, balance, etc.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>getAllDrivers()</code></td>
+                                        <td>Retrieves all drivers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>addDriver(...)</code></td>
+                                        <td>Adds a new driver with a QR code</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>deleteDriver($driver_id)</code></td>
+                                        <td>Deletes a driver</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-code me-2"></i>Example: Get All Users</h5>
+                            <div class="code-block">
+                                <span class="code-keyword">$admin</span> = <span class="code-keyword">new</span> <span class="code-function">Admin</span>();<br>
+                                <span class="code-keyword">$users</span> = <span class="code-variable">$admin</span>-><span class="code-function">getAllUsers</span>();<br>
+                                <span class="code-comment">// Returns array of user objects</span>
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-code me-2"></i>Example: Update a User</h5>
+                            <div class="code-block">
+                                <span class="code-keyword">$result</span> = <span class="code-variable">$admin</span>-><span class="code-function">updateUser</span>(<span class="code-variable">1</span>, <span class="code-string">'username'</span>, <span class="code-string">'email@example.com'</span>, <span class="code-string">'0123456'</span>, <span class="code-variable">100.0</span>, <span class="code-variable">200</span>);<br>
+                                <span class="code-keyword">if</span> (<span class="code-variable">$result</span>[<span class="code-string">'success'</span>]) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// success logic</span><br>
+                                }
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-chart-bar me-2"></i>Statistics Overview</h5>
+                            <ul>
+                                <li><strong>Total Users:</strong> Count from <code>user_information</code> table</li>
+                                <li><strong>Total Points:</strong> Sum from <code>user_information.points</code></li>
+                                <li><strong>Total Balance:</strong> Sum from <code>user_information.balance</code></li>
+                                <li><strong>Total Materials:</strong> Count from <code>material</code> table</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-truck me-2"></i>Driver Management</h5>
+                            <p>Drivers are managed with unique usernames and QR codes. When a driver is added, a QR code is generated and stored in both <code>serial_number</code> and driver's table.</p>
+                            
+                            <div class="note">
+                                <i class="fas fa-lightbulb me-2"></i><strong>Note:</strong> The Admin class requires database connection established via config.php
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-sitemap me-2"></i>Admin Class Structure</h5>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    classDiagram
+                                        class Admin {
+                                            - Database db
+                                            + __construct()
+                                            + getAllUsers() Array
+                                            + searchUsers(search_term) Array
+                                            + updateUser(user_id, username, email, phone, balance, points) Array
+                                            + deleteUser(user_id) Array
+                                            + getStatistics() Array
+                                            + getAllDrivers() Array
+                                            + addDriver(username, password, name, phone, email) Array
+                                            + deleteDriver(driver_id) Array
+                                            - getNextDriverId() Integer
+                                            - generateQRCode() String
+                                        }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- logout.php Section -->
+                <section id="logout-php" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-sign-out-alt me-2"></i>logout.php
+                            </div>
+                            <span class="file-tag badge-php">PHP Script</span>
+                        </div>
+                        <div class="card-body">
+                            <p>This script logs out the current user by destroying the session and redirecting to the home page.</p>
+                            <ul>
+                                <li><strong>Session is destroyed</strong></li>
+                                <li><strong>Redirects to:</strong> <code>Page 1.php</code></li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-code me-2"></i>Code Implementation</h5>
+                            <div class="code-block">
+                                <span class="code-comment">// Destroy all session data</span><br>
+                                <span class="code-function">session_destroy</span>();<br>
+                                <span class="code-comment">// Redirect to home page</span><br>
+                                <span class="code-function">redirect</span>(<span class="code-string">'Page 1.php'</span>);
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Dashboard.php Section -->
+                <section id="dashboard-php" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard.php
+                            </div>
+                            <span class="file-tag badge-html">HTML/PHP</span>
+                        </div>
+                        <div class="card-body">
+                            <p>This is the <strong>Admin Dashboard</strong> page. It displays various statistics and allows the admin to manage users through a table with search, edit, and delete functionalities.</p>
+                            
+                            <ul>
+                                <li><strong>Displays:</strong> user statistics, user list</li>
+                                <li><strong>Edit/Delete:</strong> In-table actions with modal for editing</li>
+                                <li><strong>Search:</strong> By username or email (client-side)</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-star me-2"></i>Key Features</h5>
+                            <ul>
+                                <li>Bootstrap based RTL design</li>
+                                <li>JavaScript for modal handling and AJAX actions</li>
+                                <li>Fetches data from <code>dashboard_backend.php</code></li>
+                            </ul>
+                            
+                            <div class="flowchart">
+                                <h6><i class="fas fa-project-diagram me-2"></i>Dashboard Workflow</h6>
+                                <p>1. Admin logs in → 2. Dashboard loads → 3. AJAX calls fetch statistics and user data → 4. Data displayed in tables → 5. Admin can search, edit, or delete users</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- exchange_handler.php Section -->
+                <section id="exchange-handler" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-exchange-alt me-2"></i>exchange_handler.php
+                            </div>
+                            <span class="file-tag badge-php">PHP Handler</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Handles <strong>material exchange</strong> by the user (either for points or money).</p>
+                            
+                            <ul>
+                                <li><strong>Checks login</strong> status</li>
+                                <li><strong>Reads:</strong> material type, quantity, exchange type (points/money)</li>
+                                <li><strong>Delegates:</strong> to <code>Material</code> methods (<code>exchangeForPoints</code> / <code>exchangeForMoney</code>)</li>
+                                <li><strong>Sets session messages</strong> (success/error)</li>
+                                <li><strong>Redirects</strong> according to the result</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-project-diagram me-2"></i>Process Flow</h5>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    flowchart TD
+                                        A[User Submits Exchange Form] --> B{Logged In?}
+                                        B -- No --> C[Redirect to Page 7.php]
+                                        B -- Yes --> D[Validate Input]
+                                        D -- Invalid --> E[Redirect to Page 4.php with Error]
+                                        D -- Valid --> F[Call Material::exchangeForPoints/ForMoney]
+                                        F -- Success --> G[Set Success Message] --> H[Redirect to Page 5.php]
+                                        F -- Fail --> I[Set Error Message] --> J[Redirect to Page 4.php]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- login_handler.php Section -->
+                <section id="login-handler" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-sign-in-alt me-2"></i>login_handler.php
+                            </div>
+                            <span class="file-tag badge-php">PHP Handler</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Processes the <strong>login form</strong> submission.</p>
+                            
+                            <ul>
+                                <li><strong>Validates</strong> username and password</li>
+                                <li><strong>Delegates</strong> login logic to <code>User</code> class</li>
+                                <li><strong>Sets session messages</strong> (success/error)</li>
+                                <li><strong>Redirects</strong> according to the result</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-project-diagram me-2"></i>Login Process</h5>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    flowchart TD
+                                        A[POST Login Form] --> B[Validate Input]
+                                        B -- Invalid --> C[Redirect to Page 7.php with Error]
+                                        B -- Valid --> D[User login]
+                                        D -- Success --> E[Redirect to Page 1.php]
+                                        D -- Fail --> F[Redirect to Page 7.php with Error]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- dashboard_backend.php Section -->
+                <section id="dashboard-backend" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-server me-2"></i>dashboard_backend.php
+                            </div>
+                            <span class="file-tag badge-php">API Endpoint</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Acts as a backend controller for the admin dashboard. Handles AJAX requests for user management.</p>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-tasks me-2"></i>Handles These Actions</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-secondary text-white">
+                                            POST Actions
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="method-table">
+                                                <tr>
+                                                    <td><code>update_user</code></td>
+                                                    <td>Updates user with new data</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><code>delete_user</code></td>
+                                                    <td>Deletes a user</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><code>search_users</code></td>
+                                                    <td>Searches for users</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-info text-white">
+                                            GET Actions
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="method-table">
+                                                <tr>
+                                                    <td><code>get_all_users</code></td>
+                                                    <td>Returns list of all users</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><code>get_statistics</code></td>
+                                                    <td>Returns system statistics</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-code me-2"></i>API Documentation</h5>
+                            
+                            <div class="api-endpoint">
+                                <h6>Update User</h6>
+                                <p><strong>Endpoint:</strong> <code>POST /dashboard_backend.php</code></p>
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li><code>action=update_user</code></li>
+                                    <li><code>user_id</code> (User ID to update)</li>
+                                    <li><code>username</code> (New username)</li>
+                                    <li><code>email</code> (New email)</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <div class="code-block">
+                                    {<br>
+                                    &nbsp;&nbsp;"success": true,<br>
+                                    &nbsp;&nbsp;"message": "User updated successfully"<br>
+                                    }
+                                </div>
+                            </div>
+                            
+                            <div class="api-endpoint mt-3">
+                                <h6>Get All Users</h6>
+                                <p><strong>Endpoint:</strong> <code>GET /dashboard_backend.php?action=get_all_users</code></p>
+                                <p><strong>Response:</strong></p>
+                                <div class="code-block">
+                                    {<br>
+                                    &nbsp;&nbsp;"success": true,<br>
+                                    &nbsp;&nbsp;"users": [<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"user_id": 1,<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"username": "john_doe",<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"email": "john@example.com",<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"points": 1500,<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"balance": 75.50<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// ... more users</span><br>
+                                    &nbsp;&nbsp;]<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- config.php Section -->
+                <section id="config-php" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-cog me-2"></i>config.php
+                            </div>
+                            <span class="file-tag badge-php">Configuration</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Holds all <strong>configuration</strong> and utility functions for the application.</p>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-key me-2"></i>Key Elements</h5>
+                            <ul>
+                                <li><strong>Database connection</strong> (PDO, PostgreSQL)</li>
+                                <li><strong>Session management</strong></li>
+                                <li><strong>Utility functions:</strong> <code>isLoggedIn</code>, <code>isAdmin</code>, <code>redirect</code>, <code>sanitize</code></li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-database me-2"></i>Database Helper Functions</h5>
+                            <table class="method-table">
+                                <tr>
+                                    <td><code>query($sql, $params = [])</code></td>
+                                    <td>Prepares & executes a query</td>
+                                </tr>
+                                <tr>
+                                    <td><code>fetchAll($stmt)</code></td>
+                                    <td>Fetches all results</td>
+                                </tr>
+                                <tr>
+                                    <td><code>fetchOne($stmt)</code></td>
+                                    <td>Fetches single record</td>
+                                </tr>
+                            </table>
+                            
+                            <div class="code-block">
+                                <span class="code-comment">// Example database configuration</span><br>
+                                <span class="code-keyword">define</span>(<span class="code-string">'DB_HOST'</span>, <span class="code-string">'localhost'</span>);<br>
+                                <span class="code-keyword">define</span>(<span class="code-string">'DB_NAME'</span>, <span class="code-string">'recycling_system'</span>);<br>
+                                <span class="code-keyword">define</span>(<span class="code-string">'DB_USER'</span>, <span class="code-string">'admin'</span>);<br>
+                                <span class="code-keyword">define</span>(<span class="code-string">'DB_PASS'</span>, <span class="code-string">'secure_password'</span>);<br>
+                                <br>
+                                <span class="code-comment">// Session start and security settings</span><br>
+                                <span class="code-function">session_start</span>();<br>
+                                <span class="code-function">ini_set</span>(<span class="code-string">'session.cookie_httponly'</span>, <span class="code-variable">1</span>);<br>
+                                <span class="code-function">ini_set</span>(<span class="code-string">'session.use_only_cookies'</span>, <span class="code-variable">1</span>);
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Material.php Section -->
+                <section id="material-php" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-recycle me-2"></i>Material.php
+                            </div>
+                            <span class="file-tag badge-php">PHP Class</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Implements the <strong>Material</strong> class for managing materials and exchange logic.</p>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-star me-2"></i>Features</h5>
+                            <ul>
+                                <li><strong>Conversion rates</strong> defined for each material type</li>
+                                <li><strong>addMaterial():</strong> Adds new material to the database with an optional QR code</li>
+                                <li><strong>calculatePoints():</strong> Calculates points for a given material and quantity</li>
+                                <li><strong>exchangeForPoints():</strong> Exchanges material for points (updates user)</li>
+                                <li><strong>exchangeForMoney():</strong> Exchanges material for money (updates user)</li>
+                                <li><strong>getAllMaterials(), getMaterial():</strong> Fetch materials from the database</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-exchange-alt me-2"></i>Material Exchange Logic</h5>
+                            <ul>
+                                <li>Each material type has a mapping for number of pieces per 100 points.</li>
+                                <li>Exchange for money: 100 points = 10 units of currency.</li>
+                            </ul>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-table me-2"></i>Conversion Table</h5>
+                            <table class="method-table">
+                                <thead>
+                                    <tr>
+                                        <th>Material</th>
+                                        <th>Pieces per Exchange</th>
+                                        <th>Points per Exchange</th>
+                                        <th>Money Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>plastic</td>
+                                        <td>20</td>
+                                        <td>100</td>
+                                        <td>100 pts = 10 LE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>glass</td>
+                                        <td>20</td>
+                                        <td>100</td>
+                                        <td>100 pts = 10 LE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>metal</td>
+                                        <td>20</td>
+                                        <td>700</td>
+                                        <td>100 pts = 10 LE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>electronics</td>
+                                        <td>20</td>
+                                        <td>100</td>
+                                        <td>100 pts = 10 LE</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="code-block">
+                                <span class="code-comment">// Example: Calculate points for plastic</span><br>
+                                <span class="code-keyword">$material</span> = <span class="code-keyword">new</span> <span class="code-function">Material</span>();<br>
+                                <span class="code-keyword">$points</span> = <span class="code-variable">$material</span>-><span class="code-function">calculatePoints</span>(<span class="code-string">'plastic'</span>, <span class="code-variable">50</span>);<br>
+                                <span class="code-comment">// Returns: 250 points (50 pieces ÷ 20 pieces per 100 points × 100)</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Database Schema Section -->
+                <section id="database-schema" class="mb-5">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-database me-2"></i>Database Schema (scc.SQL)
+                            </div>
+                            <span class="file-tag badge-sql">PostgreSQL</span>
+                        </div>
+                        <div class="card-body">
+                            <p>Defines the <strong>database schema</strong> for the application in PostgreSQL.</p>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-table me-2"></i>Main Tables</h5>
+                            <table class="method-table">
+                                <thead>
+                                    <tr>
+                                        <th>Table</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>serial_number</code></td>
+                                        <td>Stores unique QR codes for items/drivers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>user_information</code></td>
+                                        <td>Stores user data, balance, points, QR code</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>material</code></td>
+                                        <td>Stores materials submitted for recycling</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>factory</code></td>
+                                        <td>Stores factories with QR code</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>driver</code></td>
+                                        <td>Stores driver data and QR code</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h5 class="mt-4 mb-3"><i class="fas fa-sitemap me-2"></i>Schema Relationships</h5>
+                            <div class="diagram-container">
+                                <div class="mermaid">
+                                    erDiagram
+                                        USER_INFORMATION {
+                                            int user_id PK
+                                            varchar username
+                                            varchar password_hash
+                                            varchar user_email
+                                            varchar user_phone
+                                            varchar user_address
+                                            decimal balance
+                                            int points
+                                            bigint Qr_code FK
+                                        }
+                                        MATERIAL {
+                                            int material_id PK
+                                            varchar material_type
+                                            int material_quantity
+                                            bigint Qr_code FK
+                                        }
+                                        DRIVER {
+                                            int driver_id PK
+                                            varchar username
+                                            varchar password_hash
+                                            varchar driver_name
+                                            varchar driver_phone
+                                            varchar driver_email
+                                            bigint Qr_code FK
+                                        }
+                                        FACTORY {
+                                            int factory_id PK
+                                            varchar factory_name
+                                            varchar location
+                                            bigint Qr_code FK
+                                        }
+                                        SERIAL_NUMBER {
+                                            bigint Qr_code PK
+                                        }
+
+                                        USER_INFORMATION }o--|| SERIAL_NUMBER : has
+                                        MATERIAL }o--|| SERIAL_NUMBER : has
+                                        DRIVER }o--|| SERIAL_NUMBER : has
+                                        FACTORY }o--|| SERIAL_NUMBER : has
+                                </div>
+                            </div>
+                            
+                            <div class="code-block">
+                                <span class="code-comment">-- Example: Create user_information table</span><br>
+                                <span class="code-keyword">CREATE TABLE</span> user_information (<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;user_id <span class="code-function">SERIAL PRIMARY KEY</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;username <span class="code-function">VARCHAR</span>(50) <span class="code-keyword">NOT NULL UNIQUE</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;password_hash <span class="code-function">VARCHAR</span>(255) <span class="code-keyword">NOT NULL</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;user_email <span class="code-function">VARCHAR</span>(100) <span class="code-keyword">NOT NULL UNIQUE</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;user_phone <span class="code-function">VARCHAR</span>(20),<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;balance <span class="code-function">DECIMAL</span>(10,2) <span class="code-keyword">DEFAULT</span> 0.00,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;points <span class="code-function">INTEGER</span> <span class="code-keyword">DEFAULT</span> 0,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;Qr_code <span class="code-function">BIGINT REFERENCES</span> serial_number(Qr_code)<br>
+                                );
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Security Notice -->
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <i class="fas fa-shield-alt me-2"></i>Security Notice
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Always sanitize user inputs and validate sessions to prevent unauthorized access and SQL injection.</strong></p>
+                        <ul>
+                            <li>Use prepared statements for all database queries</li>
+                            <li>Validate user input on both client and server side</li>
+                            <li>Implement proper session management with timeout</li>
+                            <li>Restrict admin functions to authenticated admin users only</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Best Practices -->
+                <div class="card border-info mt-4">
+                    <div class="card-header bg-info text-white">
+                        <i class="fas fa-check-circle me-2"></i>Database Best Practices
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Keep all schema changes in version control for reliable deployments and troubleshooting.</strong></p>
+                        <ul>
+                            <li>Maintain migration scripts for database changes</li>
+                            <li>Use transactions for multiple related operations</li>
+                            <li>Implement proper indexing for frequently queried columns</li>
+                            <li>Regularly backup the database</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-5 py-4 bg-dark text-white text-center">
+        <div class="container">
+            <p>System Documentation v2.1.0 | Last Updated: June 2024</p>
+            <p class="mb-0">Recycling Management System &copy; 2024</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Mermaid diagrams
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose'
+        });
+        
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Highlight code blocks on click
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('click', function() {
+                const range = document.createRange();
+                range.selectNodeContents(this);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            });
+        });
+    </script>
+</body>
+</html>
