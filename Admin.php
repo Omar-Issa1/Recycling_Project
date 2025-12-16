@@ -96,11 +96,12 @@ class Admin {
             $materials_result = $this->db->fetchOne($stmt_materials);
             
             return [
-                'total_users' => $users_result['TOTAL_USERS'],
-                'total_points' => $points_result['TOTAL_POINTS'],
-                'total_balance' => $balance_result['TOTAL_BALANCE'],
-                'total_materials' => $materials_result['TOTAL_MATERIALS']
-            ];
+    'total_users' => $users_result['total_users'],
+    'total_points' => $points_result['total_points'],
+    'total_balance' => $balance_result['total_balance'],
+    'total_materials' => $materials_result['total_materials']
+];
+
             
         } catch (Exception $e) {
             return [
@@ -171,7 +172,7 @@ class Admin {
         $sql = "SELECT COALESCE(MAX(driver_id), 0) + 1 as next_id FROM driver";
         $stmt = $this->db->query($sql, []);
         $result = $this->db->fetchOne($stmt);
-        return $result['NEXT_ID'];
+return $result['next_id']; 
     }
     
     private function generateQRCode() {

@@ -84,18 +84,19 @@ require_once 'dashboard_backend.php';
       </thead>
       <tbody>
         <?php foreach ($users as $user): ?>
-        <tr data-user-id="<?php echo $user['USER_ID']; ?>">
-          <td><?php echo $user['USER_ID']; ?></td>
-          <td class="username"><?php echo htmlspecialchars($user['USERNAME']); ?></td>
-          <td class="email"><?php echo htmlspecialchars($user['USER_EMAIL']); ?></td>
-          <td class="phone"><?php echo htmlspecialchars($user['USER_PHONE']); ?></td>
-          <td class="balance"><?php echo $user['BALANCE']; ?></td>
-          <td class="points"><?php echo $user['POINTS']; ?></td>
-          <td>
-            <button class="btn-action edit" onclick="editUser(<?php echo $user['USER_ID']; ?>)">تعديل</button>
-            <button class="btn-action delete" onclick="deleteUser(<?php echo $user['USER_ID']; ?>)">حذف</button>
-          </td>
-        </tr>
+        <tr data-user-id="<?php echo $user['user_id']; ?>">
+  <td><?php echo $user['user_id']; ?></td>
+  <td class="username"><?php echo htmlspecialchars($user['username'] ?? ''); ?></td>
+  <td class="email"><?php echo htmlspecialchars($user['user_email'] ?? ''); ?></td>
+  <td class="phone"><?php echo htmlspecialchars($user['user_phone'] ?? ''); ?></td>
+  <td class="balance"><?php echo $user['balance']; ?></td>
+  <td class="points"><?php echo $user['points']; ?></td>
+  <td>
+    <button class="btn-action edit" onclick="editUser(<?php echo $user['user_id']; ?>)">تعديل</button>
+    <button class="btn-action delete" onclick="deleteUser(<?php echo $user['user_id']; ?>)">حذف</button>
+  </td>
+</tr>
+
         <?php endforeach; ?>
       </tbody>
     </table>
