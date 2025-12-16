@@ -9,24 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($username === '' || $password === '') {
         $_SESSION['error'] = 'الرجاء ملء جميع الحقول';
-        header('Location: Page7.php');
-        exit;
+        redirect('Page7.php');
     }
 
     $user = new User();
     $result = $user->login($username, $password);
 
     if ($result['success']) {
-        $_SESSION['success'] = $result['message'];
-        header('Location: home.php');
-        exit;
+        redirect('home.php');
     } else {
         $_SESSION['error'] = $result['message'];
-        header('Location: Page7.php');
-        exit;
+        redirect('Page7.php');
     }
 
 } else {
-    header('Location: Page7.php');
-    exit;
+    redirect('Page7.php');
 }

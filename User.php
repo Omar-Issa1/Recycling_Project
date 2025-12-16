@@ -8,17 +8,21 @@ class User {
         $this->db = new Database();
     }
 
+    // ✅ LOGIN بدون hash
     public function login($username, $password) {
         try {
             $sql = "SELECT user_id, username, password_hash, points, balance
                     FROM user_information
-                    WHERE username = :username";
+                    WHERE username = :username AND password_hash = :password";
 
-            $stmt = $this->db->query($sql, [':username' => $username]);
+            $stmt = $this->db->query($sql, [
+                ':username' => $username,
+                ':password' => $password
+            ]);
+
             $user = $this->db->fetchOne($stmt);
 
-            if ($user && password_verify($password, $user['password_hash'])) {
-
+            if ($user) {
                 $_SESSION['user_id']  = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['points']   = $user['points'];
@@ -34,6 +38,7 @@ class User {
         }
     }
 
+    // ✅ REGISTER بدون hash
     public function register($username, $password, $email, $phone, $address) {
         try {
             $checkSql = "SELECT COUNT(*) AS cnt FROM user_information WHERE username = :username";
@@ -44,7 +49,6 @@ class User {
                 return ['success' => false, 'message' => 'اسم المستخدم موجود بالفعل'];
             }
 
-            $password_hash = password_hash($password, PASSWORD_DEFAULT);
             $qr_code = rand(100000000, 999999999);
 
             $this->db->query(
@@ -58,7 +62,7 @@ class User {
 
             $this->db->query($sql, [
                 ':username' => $username,
-                ':pass'     => $password_hash,
+                ':pass'     => $password, // ⚠️ باسورد عادي
                 ':email'    => $email,
                 ':phone'    => $phone,
                 ':address'  => $address,
@@ -70,27 +74,5 @@ class User {
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
-    }
-
-    public function updatePoints($user_id, $points) {
-        $this->db->query(
-            "UPDATE user_information
-             SET points = COALESCE(points,0) + :points
-             WHERE user_id = :id",
-            [':points' => $points, ':id' => $user_id]
-        );
-
-        $_SESSION['points'] += $points;
-    }
-
-    public function updateBalance($user_id, $amount) {
-        $this->db->query(
-            "UPDATE user_information
-             SET balance = COALESCE(balance,0) + :amount
-             WHERE user_id = :id",
-            [':amount' => $amount, ':id' => $user_id]
-        );
-
-        $_SESSION['balance'] += $amount;
     }
 }
