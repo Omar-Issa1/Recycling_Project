@@ -17,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if ($result['success']) {
         $_SESSION['success'] = $result['message'];
-        redirect('Page 1.php');
+        redirect('home.php');
     } else {
         $_SESSION['error'] = $result['message'];
-        redirect('Page 7.php');
+        redirect('Page7.php');
     }
 } else {
-    redirect('Page 7.php');
+    redirect('Page7.php');
 }
 ?>
 

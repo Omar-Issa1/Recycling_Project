@@ -10,7 +10,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             <img src="photo/Logo.png" alt="خردة">
         </div>
         <ul class="nav-links">
-            <li><a href="Page 1.php">الرئيسية</a></li>
+            <li><a href="home.php">الرئيسية</a></li>
             <li><a href="Page 2.php">الخدمات</a></li>
             <li><a href="Page 3.php">بدل الخردة</a></li>
             <li><a href="Page 4.php">النقاط والجوائز</a></li>

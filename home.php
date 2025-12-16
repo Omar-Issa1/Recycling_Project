@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="Page 1.css">
+<link rel="stylesheet" href="home.css">
     <link rel="website icon" href="photo/Icon.png" type="png">
 <link rel="stylesheet" href="Navbar.css">
 </head>
@@ -26,8 +26,8 @@
                     </ul>
 
                     <div class="d-flex flex-column align-items-md-start align-items-center">
-                        <button onclick="window.location.href='Page 7.php'" class="hero-btn-start">إبدأ دلوقتي !</button>
-                        <button onclick="window.location.href='Page 6.php'" class="hero-btn-join">إنضم لفريق عمل خردة الان</button>
+                        <button onclick="window.location.href='Page7.php'" class="hero-btn-start">إبدأ دلوقتي !</button>
+                        <button onclick="window.location.href='Page6.php'" class="hero-btn-join">إنضم لفريق عمل خردة الان</button>
                     </div>
                 </div>
 

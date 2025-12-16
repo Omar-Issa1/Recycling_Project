@@ -1,2 +1,2 @@
 <?php
-echo "INDEX WORKS ✅";
+require_once __DIR__ . '/home.php';

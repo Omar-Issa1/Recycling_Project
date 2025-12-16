@@ -2,7 +2,7 @@
 require_once 'config.php';
 
 if (isLoggedIn()) {
-    redirect('Page 1.php');
+    redirect('home.php');
 }
 ?>
 <!DOCTYPE html>
