@@ -1,0 +1,36 @@
+body { font-family: 'Cairo', sans-serif; background-color: #fff; }
+
+.tracking-title { color: #4a7c2d; }
+
+.counter-box .btn-counter {
+    background-color: #4a7c2d; color: white;
+    width: 80px; height: 80px; border-radius: 20px;
+    font-size: 3rem; border: none; line-height: 1;
+}
+
+.counter-value { font-size: 5rem; font-weight: bold; color: #4a7c2d; }
+
+.btn-action {
+    background-color: #4a7c2d; color: white;
+    border-radius: 30px; padding: 15px; font-size: 1.5rem;
+    font-weight: bold; border: none;
+}
+
+.circular-progress {
+    width: 350px; height: 350px;
+    background: #4a7c2d;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    position: relative;
+}
+
+.inner-circle {
+    width: 180px; height: 180px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.inner-circle img { width: 35px; height: 35px; object-fit: contain; }
+

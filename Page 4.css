@@ -1,0 +1,169 @@
+:root {
+    --main-green: #3a8f2e;  
+    --dark-green: #17683f;   
+    --light-green: #5f8d3a;  
+    --bg-gray: #e0e0e0; 
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #fff;
+    color: var(--dark-green);
+    overflow-x: hidden;
+}
+
+.main-container {
+    margin-top: 40px;
+    margin-bottom: 50px;
+}
+
+.right-section {
+    text-align: center;
+}
+
+.img-frame {
+    display: inline-block;
+    border: 3px solid var(--main-green);
+    border-radius: 30px;
+    padding: 10px;
+    margin-bottom: 30px;
+    background: #fff;
+}
+
+.img-frame img {
+    max-width: 100%;
+    width: 350px;
+    height: auto;
+    border-radius: 20px;
+}
+
+.materials-list {
+    text-align: right; 
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--main-green);
+    margin-bottom: 20px;
+}
+
+.materials-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.materials-list li {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--main-green);
+}
+
+.dot {
+    width: 18px;
+    height: 18px;
+    background-color: var(--dark-green);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.note-head {
+    font-weight: 800;
+    color: var(--dark-green);
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.note-box {
+    background-color: var(--light-green);
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    margin-bottom: 40px;
+    max-width: 500px; 
+}
+
+.note-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.note-box li {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.note-box i {
+    color: #c6f3a6;
+}
+
+.goal-wrapper {
+    max-width: 350px;
+}
+
+.goal-head {
+    font-weight: 700;
+    color: var(--dark-green);
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.goal-box {
+    border: 3px solid var(--main-green);
+    border-radius: 35px;
+    padding: 25px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.goal-box label {
+    font-weight: 700;
+    color: var(--dark-green);
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: right;
+    font-size: 15px;
+}
+
+.goal-box input {
+    width: 100%;
+    background-color: var(--bg-gray);
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 8px 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    outline: none;
+}
+
+.btn-start {
+    background-color: #2ebf13;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: 0.3s;
+}
+
+.btn-start:hover {
+    background-color: #259c0f;
+}

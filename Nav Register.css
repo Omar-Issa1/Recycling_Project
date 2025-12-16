@@ -1,0 +1,12 @@
+.auth-navbar {
+  padding: 0px 40px;
+}
+
+.logo {
+  width: 45px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}

@@ -1,0 +1,50 @@
+.navbar-frame {
+    border: 3px solid #4caf50;
+    border-radius: 30px;
+    background: #fff;
+    margin: 20px auto;
+    padding: 15px 25px;
+    max-width: 1200px;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo img {
+    width: 55px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    margin: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #3a633a;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-links .active {
+    font-weight: 700;
+    border-bottom: 3px solid #4caf50;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.user-icon img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid #4caf50;
+}

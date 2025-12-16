@@ -1,0 +1,58 @@
+:root {
+    --main-green: #5ea73d;
+    --dark-green: #4a8530;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #f9f9f9;
+}
+
+.auth-btns .btn {
+    border-radius: 20px; font-size: 0.8rem; 
+    font-weight: bold;
+    padding: 5px 15px; 
+    margin-left: 5px;
+}
+
+.btn-custom-green {
+    background-color: var(--main-green); 
+    color: white; 
+    border: none;
+}
+.btn-custom-green:hover { 
+    background-color: var(--dark-green); 
+    color: white; 
+}
+
+.hero-section { 
+    padding: 60px 0; 
+    background-color: #fff; 
+}
+.hero-title { 
+    color: var(--dark-green); 
+    font-weight: 800; 
+    font-size: 2.5rem; 
+    margin-bottom: 20px; }
+
+.features-list { 
+    list-style: none; 
+    padding: 0; 
+    margin-bottom: 30px; }
+.features-list li { 
+    margin-bottom: 15px; 
+    font-size: 1.1rem; 
+    color: #555; 
+    display: flex; 
+    align-items: center; }
+.features-list li i { color: var(--main-green); margin-left: 10px; font-size: 1.3rem; }
+
+.hero-btn-start, .hero-btn-join {
+    background-color: var(--dark-green); color: white;
+    border-radius: 30px; border: none; font-weight: bold;
+}
+
+.hero-btn-start { padding: 10px 40px; font-size: 1.2rem; margin-bottom: 15px; }
+.hero-btn-join { padding: 12px 0; width: 100%; max-width: 400px; font-size: 1.2rem; display: block; }
+
+.globe-img { max-width: 100%; height: auto; border-radius: 50%; max-height: 400px; }
