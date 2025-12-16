@@ -75,11 +75,13 @@
     let points = parseInt(document.getElementById('pointsResult').value);
 
     if (points > 0) {
-        fetch('add_points.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ points: points })
-        })
+       fetch('add_points.php', {
+    method: 'POST',
+    credentials: 'same-origin', //  مهم
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ points: points })
+})
+
         .then(res => res.json())
         .then(data => {
             if (data.success) {

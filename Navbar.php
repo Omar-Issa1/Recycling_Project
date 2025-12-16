@@ -1,7 +1,8 @@
 <?php
-// مهم جدًا: السيشن لازم تكون شغالة (config.php فيه session_start)
+require_once 'config.php'; // فيه session_start
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
+
 
 <nav class="navbar-frame">
     <div class="navbar container">
