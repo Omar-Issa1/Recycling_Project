@@ -42,7 +42,7 @@
             <li>خصومات وعروض فقط</li>
             <li>متاح تبديلها من أي مكان</li>
           </ul>
-                <button onclick="window.location.href='Page 4.php'" class="btn btn-success w-100">ابدا الان</button>
+                <button onclick="window.location.href='Page 4.php'" class="btn-read-more">ابدا الان</button>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 mb-4">
