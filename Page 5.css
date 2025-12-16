@@ -57,7 +57,7 @@ body {
 }
 
 .inner-circle img {
-  width: 35px;
-  height: 35px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
 }
