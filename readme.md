@@ -136,7 +136,7 @@ Processes the **login form** submission.
 flowchart TD
     A[POST Login Form] --> B[Validate Input]
     B -- Invalid --> C[Redirect to Page 7.php with Error]
-    B -- Valid --> D[User->login()]
+    B -- Valid --> D[User login]
     D -- Success --> E[Redirect to Page 1.php]
     D -- Fail --> F[Redirect to Page 7.php with Error]
 ```
