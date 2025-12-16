@@ -1,31 +1,39 @@
 <?php
 
-define('DB_HOST', getenv('DB_HOST'));
-define('DB_PORT', getenv('DB_PORT'));
-define('DB_NAME', getenv('DB_NAME'));
-define('DB_USER', getenv('DB_USER'));
-define('DB_PASS', getenv('DB_PASSWORD'));
-
 class Database {
     private $conn;
-    
+
     public function __construct() {
         $this->connect();
     }
-    
+
     private function connect() {
         try {
-            $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
-            $this->conn = new PDO($dsn, DB_USER, DB_PASS);
+            $databaseUrl = getenv('DATABASE_URL');
 
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+            if (!$databaseUrl) {
+                throw new Exception("DATABASE_URL not set");
+            }
 
-        } catch (PDOException $e) {
-            die("خطأ في الاتصال بقاعدة البيانات");
+            $db = parse_url($databaseUrl);
+
+            $host   = $db['host'];
+            $port   = $db['port'];
+            $dbname = ltrim($db['path'], '/');
+            $user   = $db['user'];
+            $pass   = $db['pass'];
+
+            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+
+            $this->conn = new PDO($dsn, $user, $pass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ]);
+
+        } catch (Exception $e) {
+            die("خطأ في الاتصال بقاعدة البيانات: " . $e->getMessage());
         }
     }
-    
+
     public function getConnection() {
         return $this->conn;
     }
@@ -52,8 +60,9 @@ class Database {
     }
 }
 
-session_start();
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
@@ -69,9 +78,5 @@ function redirect($url) {
 }
 
 function sanitize($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+    return htmlspecialchars(stripslashes(trim($data)));
 }
-?>
