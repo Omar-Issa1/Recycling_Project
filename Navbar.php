@@ -1,9 +1,7 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
+
 <nav class="navbar-frame">
     <div class="navbar container">
         <div class="nav-logo">
