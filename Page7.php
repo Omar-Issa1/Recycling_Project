@@ -1,6 +1,9 @@
+<?php
+require_once 'config.php';
+?>
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<html lang="ar">
+
   <meta charset="UTF-8">
   <title>تسجيل الدخول</title>
   <link rel="stylesheet" href="Register.css">
