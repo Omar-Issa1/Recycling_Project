@@ -2,28 +2,31 @@
 require_once 'config.php';
 require_once 'User.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = ($_POST['username']);
-    $password = $_POST['password'];
-    
-    if (empty($username) || empty($password)) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if ($username === '' || $password === '') {
         $_SESSION['error'] = 'الرجاء ملء جميع الحقول';
-        redirect('Page 7.php');
+        header('Location: Page7.php');
+        exit;
     }
-    
+
     $user = new User();
-    
     $result = $user->login($username, $password);
-    
+
     if ($result['success']) {
         $_SESSION['success'] = $result['message'];
-        redirect('home.php');
+        header('Location: home.php');
+        exit;
     } else {
         $_SESSION['error'] = $result['message'];
-        redirect('Page7.php');
+        header('Location: Page7.php');
+        exit;
     }
-} else {
-    redirect('Page7.php');
-}
-?>
 
+} else {
+    header('Location: Page7.php');
+    exit;
+}
