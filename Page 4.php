@@ -31,6 +31,16 @@
                 </ul>
             </div>
         </div>
+        <div class="col-lg-6 left-section">
+                <h4 class="note-head">ملاحظات هامة عن الخردة قبل التبديل</h4>
+                <div class="note-box">
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> متاح تبديلها من أي مكان</li>
+                        <li><i class="fa-solid fa-check"></i> خصومات و عروض فقط</li>
+                        <li><i class="fa-solid fa-check"></i> لكل 20 زجاجة 100 نقطة</li>
+                        <li><i class="fa-solid fa-check"></i> يرجى فرز المواد الصحيحة</li>
+                    </ul>
+                </div>
 
         <div class="col-lg-6 left-section">
             <h4 class="note-head">ابدأ الهدف الآن</h4>
