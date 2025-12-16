@@ -1,19 +1,18 @@
 <?php
 require_once 'config.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: Page7.php");
-    exit;
+if (!isLoggedIn() || !isset($_SESSION['goal'])) {
+    redirect('Page 4.php');
 }
+
+$goal = $_SESSION['goal'];
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تتبع التبديل</title>
-
+    <title>تنفيذ الهدف</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Page 5.css">
     <link rel="stylesheet" href="Navbar.css">
 </head>
@@ -21,60 +20,49 @@ if (!isset($_SESSION['user_id'])) {
 
 <?php include 'Navbar.php'; ?>
 
-<div class="container mt-5 py-5 text-center">
+<div class="container text-center mt-5">
 
-    <h2 class="mb-4">رصيدك الحالي</h2>
-    <h1 class="text-success mb-5">
-        <?php echo (int) $_SESSION['points']; ?> نقطة
-    </h1>
+    <h3 class="mb-3">هدفك الحالي</h3>
+    <p>عدد الزجاجات: <strong><?= $goal['bottles'] ?></strong></p>
+    <p>النقاط المتوقعة: <strong><?= $goal['points'] ?></strong></p>
 
-    <div class="counter-box d-flex justify-content-center align-items-center gap-4 mb-4">
-        <button class="btn btn-danger" onclick="change(-100)">-</button>
-        <span id="counter" class="fs-1 fw-bold">0</span>
-        <button class="btn btn-success" onclick="change(100)">+</button>
+    <hr>
+
+    <h4>عدد الزجاجات التي أضفتها</h4>
+
+    <div class="d-flex justify-content-center align-items-center gap-4 my-4">
+        <button class="btn btn-danger" onclick="change(-1)">-</button>
+        <span id="count" class="fs-2"><?= $goal['done'] ?></span>
+        <button class="btn btn-success" onclick="change(1)">+</button>
     </div>
 
-    <p class="mb-4">كل 100 نقطة = 10 جنيه</p>
+    <button class="btn btn-primary"
+            onclick="finishGoal()"
+            <?= $goal['done'] < $goal['bottles'] ? 'disabled' : '' ?>>
+        إنهاء الهدف وإضافة النقاط
+    </button>
 
-    <div class="d-grid gap-3 col-6 mx-auto">
-        <button class="btn btn-primary" onclick="redeem('points')">
-            تثبيت التبديل بالنقاط
-        </button>
-        <button class="btn btn-warning" onclick="redeem('money')">
-            تحويل النقاط لأموال
-        </button>
-    </div>
 </div>
 
 <script>
-let counter = 0;
-const maxPoints = <?php echo (int) $_SESSION['points']; ?>;
+let done = <?= $goal['done'] ?>;
+const max = <?= $goal['bottles'] ?>;
 
-function change(value) {
-    counter += value;
-    if (counter < 0) counter = 0;
-    if (counter > maxPoints) counter = maxPoints;
-    document.getElementById('counter').innerText = counter;
+function change(v) {
+    done += v;
+    if (done < 0) done = 0;
+    if (done > max) done = max;
+    document.getElementById('count').innerText = done;
 }
 
-function redeem(type) {
-    if (counter <= 0) {
-        alert("اختر عدد نقاط صحيح");
-        return;
-    }
-
-    fetch('redeem.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            type: type,
-            amount: counter
-        })
+function finishGoal() {
+    fetch('finish_goal.php', {
+        method: 'POST'
     })
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert("تمت العملية بنجاح ✅");
+            alert("تم إضافة النقاط بنجاح ✅");
             location.reload();
         } else {
             alert(data.message);
