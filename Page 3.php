@@ -28,7 +28,7 @@
                     <li>خصومات و عروض فقط</li>
                     <li>متاح تبديلها من المنزل</li>
                 </ul>
-                <button onclick="window.location.href='Page 4.php'" class="btn btn-success w-100">ابدا الان</button>
+                <button onclick="window.location.href='Page 4.php'" class="btn btn-success w-100">غير متاح</button>
             </div>
         </div>
         <div class="col-md-4">
@@ -40,7 +40,7 @@
                     <li>خصومات و عروض فقط</li>
                     <li>متاح تبديلها من المنزل</li>
                 </ul>
-                <button onclick="window.location.href='Page 4.php'" class="btn btn-success w-100">ابدا الان</button>
+                <button onclick="window.location.href='Page 4.php'" class="btn btn-success w-100"> غير متاح</button>
             </div>
         </div>
         <div class="col-md-4">

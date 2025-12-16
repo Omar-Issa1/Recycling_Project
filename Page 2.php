@@ -28,7 +28,7 @@
             <li>خصومات وعروض فقط</li>
             <li>متاح تبديلها من المنزل</li>
           </ul>
-          <a href="#" class="btn-read-more">متاح للان</a>
+          <a href="#" class="btn-read-more">غير متاح الان</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 mb-4">
@@ -56,7 +56,7 @@
             <li>خصومات وعروض فقط</li>
             <li>متاح تبديلها من المنزل</li>
           </ul>
-          <a href="#" class="btn-read-more">متاح للان</a>
+         <a href="#" class="btn-read-more">غير متاح الان</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 mb-4">
@@ -70,7 +70,7 @@
             <li>خصومات وعروض فقط</li>
             <li>متاح تبديلها من المنزل</li>
           </ul>
-          <a href="#" class="btn-read-more">متاح للان</a>
+         <a href="#" class="btn-read-more">غير متاح الان</a>
         </div>
       </div>
 
