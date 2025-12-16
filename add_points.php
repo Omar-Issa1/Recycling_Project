@@ -2,6 +2,8 @@
 require_once 'config.php';
 require_once 'User.php';
 
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'يجب تسجيل الدخول']);
     exit;
@@ -18,4 +20,7 @@ if ($points <= 0) {
 $user = new User();
 $user->updatePoints($_SESSION['user_id'], $points);
 
-echo json_encode(['success' => true]);
+echo json_encode([
+    'success' => true,
+    'points' => $_SESSION['points']
+]);

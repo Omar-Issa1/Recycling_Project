@@ -2,6 +2,8 @@
 require_once 'config.php';
 require_once 'User.php';
 
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'يجب تسجيل الدخول']);
     exit;
@@ -16,9 +18,7 @@ if ($amount <= 0) {
     exit;
 }
 
-$currentPoints = $_SESSION['points'];
-
-if ($amount > $currentPoints) {
+if ($amount > $_SESSION['points']) {
     echo json_encode(['success' => false, 'message' => 'نقاطك غير كافية']);
     exit;
 }
@@ -26,16 +26,13 @@ if ($amount > $currentPoints) {
 $user = new User();
 
 /**
- * افتراض:
  * كل 100 نقطة = 10 جنيه
  */
 if ($type === 'points') {
-    // بس خصم نقاط
     $user->updatePoints($_SESSION['user_id'], -$amount);
 
 } elseif ($type === 'money') {
     $money = ($amount / 100) * 10;
-
     $user->updatePoints($_SESSION['user_id'], -$amount);
     $user->updateBalance($_SESSION['user_id'], $money);
 
