@@ -8,31 +8,36 @@ class Database {
     }
 
     private function connect() {
-        try {
-            $databaseUrl = getenv('DATABASE_URL');
+    try {
+        $databaseUrl = getenv('DATABASE_URL');
 
-            if (!$databaseUrl) {
-                throw new Exception("DATABASE_URL not set");
-            }
-
-            $db = parse_url($databaseUrl);
-
-            $host   = $db['host'];
-            $port   = $db['port'];
-            $dbname = ltrim($db['path'], '/');
-            $user   = $db['user'];
-            $pass   = $db['pass'];
-
-            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
-
-            $this->conn = new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            ]);
-
-        } catch (Exception $e) {
-            die("خطأ في الاتصال بقاعدة البيانات: " . $e->getMessage());
+        if (!$databaseUrl) {
+            throw new Exception("DATABASE_URL not set");
         }
+
+        $db = parse_url($databaseUrl);
+
+        $host   = $db['host'] ?? null;
+        $port   = $db['port'] ?? 5432; // ✅ fallback
+        $dbname = isset($db['path']) ? ltrim($db['path'], '/') : null;
+        $user   = $db['user'] ?? null;
+        $pass   = $db['pass'] ?? null;
+
+        if (!$host || !$dbname || !$user) {
+            throw new Exception("Invalid DATABASE_URL");
+        }
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+
+        $this->conn = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]);
+
+    } catch (Exception $e) {
+        die("خطأ في الاتصال بقاعدة البيانات: " . $e->getMessage());
     }
+}
+
 
     public function getConnection() {
         return $this->conn;
