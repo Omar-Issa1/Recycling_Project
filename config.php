@@ -13,17 +13,32 @@ class Database {
     private function connect() {
         $databaseUrl = getenv('DATABASE_URL');
         if (!$databaseUrl) {
-            die('DB ERROR');
+            die('DATABASE_URL not set');
         }
 
         $db = parse_url($databaseUrl);
 
-        $dsn = "pgsql:host={$db['host']};port={$db['port']};dbname=" .
-               ltrim($db['path'], '/') . ";sslmode=require";
+        $host = $db['host'] ?? null;
+        $user = $db['user'] ?? null;
+        $pass = $db['pass'] ?? null;
+        $dbname = isset($db['path']) ? ltrim($db['path'], '/') : null;
 
-        $this->conn = new PDO($dsn, $db['user'], $db['pass'], [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]);
+        // ✅ fallback للـ port
+        $port = $db['port'] ?? 5432;
+
+        if (!$host || !$user || !$dbname) {
+            die('Invalid DATABASE_URL');
+        }
+
+        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
+
+        try {
+            $this->conn = new PDO($dsn, $user, $pass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
+        } catch (PDOException $e) {
+            die("DB CONNECTION FAILED");
+        }
     }
 
     public function query($sql, $params = []) {
@@ -42,4 +57,8 @@ class Database {
     public function fetchAll($stmt) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+}
+
+function sanitize($data) {
+    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
 }
