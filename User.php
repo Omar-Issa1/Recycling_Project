@@ -41,7 +41,8 @@ class User {
             $stmt = $this->db->query($checkSql, [':username' => $username]);
             $result = $this->db->fetchOne($stmt);
             
-            if ($result['CNT'] > 0) {
+           if ($result['cnt'] > 0) {
+
                 return ['success' => false, 'message' => 'اسم المستخدم موجود بالفعل'];
             }
             
