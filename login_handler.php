@@ -3,7 +3,7 @@ require_once 'config.php';
 require_once 'User.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = sanitize($_POST['username']);
+    $username = ($_POST['username']);
     $password = $_POST['password'];
     
     if (empty($username) || empty($password)) {
