@@ -73,4 +73,20 @@ class User {
 
         return ['success' => true];
     }
+    public function updatePoints($user_id, $points) {
+    $sql = "UPDATE user_information
+            SET points = COALESCE(points, 0) + :points
+            WHERE user_id = :user_id";
+
+    $this->db->query($sql, [
+        ':points' => $points,
+        ':user_id' => $user_id
+    ]);
+
+    // تحديث السيشن عشان الـ Navbar
+    if (isset($_SESSION['points'])) {
+        $_SESSION['points'] += $points;
+    }
+}
+
 }
