@@ -8,66 +8,83 @@ if (!isset($_SESSION['user_id'], $_SESSION['goal'])) {
 
 $goal = $_SESSION['goal'];
 ?>
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تنفيذ الهدف</title>
+    <title>تتبع التبديل</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Page 5.css">
     <link rel="stylesheet" href="Navbar.css">
 </head>
-
 <body>
 
 <?php include 'Navbar.php'; ?>
 
-<div class="container text-center mt-5">
+<div class="container mt-5 py-5">
+    <div class="row align-items-center">
 
-    <h3>هدفك الحالي</h3>
-    <p>عدد الزجاجات: <strong><?php echo $goal['bottles']; ?></strong></p>
-    <p>النقاط عند الإنهاء: <strong><?php echo $goal['points']; ?></strong></p>
+        <div class="col-md-6 text-center">
+            <h1 class="display-3 fw-bold mb-5">تتبع التبديل</h1>
 
-    <h1 id="counter" class="my-4">0</h1>
+            <div class="counter-box d-flex align-items-center justify-content-center gap-5 mb-5">
+                <button class="btn-counter" onclick="change(-1)">-</button>
+                <span id="counter" class="counter-value">0</span>
+                <button class="btn-counter" onclick="change(1)">+</button>
+            </div>
 
-    <div class="d-flex justify-content-center gap-3">
-        <button class="btn btn-success" onclick="addBottle()">+ زجاجة</button>
-        <button class="btn btn-danger" onclick="finishGoal()">إنهاء الهدف</button>
+            <div class="d-grid gap-3 col-8 mx-auto">
+                <button class="btn-action" onclick="finishGoal()">
+                    إنهاء الهدف وإضافة النقاط
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <div class="circular-progress">
+                <div class="inner-circle">
+                    <img src="photo/image.png" alt="Bottle">
+                </div>
+            </div>
+            <div class="mt-3 fw-bold">
+                بلاستيك<br>
+                <?php echo $goal['bottles']; ?> زجاجة
+            </div>
+        </div>
+
     </div>
-
 </div>
 
 <script>
-let collected = 0;
-const goalBottles = <?php echo $goal['bottles']; ?>;
+let count = 0;
+const max = <?php echo $goal['bottles']; ?>;
 
-function addBottle() {
-    if (collected < goalBottles) {
-        collected++;
-        document.getElementById('counter').innerText = collected;
-    }
+function change(v) {
+    count += v;
+    if (count < 0) count = 0;
+    if (count > max) count = max;
+    document.getElementById('counter').innerText = count;
 }
 
 function finishGoal() {
-    if (collected < goalBottles) {
+    if (count < max) {
         alert("لسه ما خلصتش الهدف");
         return;
     }
 
     fetch('finish_goal.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
         credentials: 'same-origin'
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert("تم إنهاء الهدف وإضافة النقاط ✅");
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            alert("تم إضافة النقاط ✅");
             location.href = 'home.php';
         } else {
-            alert(data.message);
+            alert(d.message);
         }
     });
 }

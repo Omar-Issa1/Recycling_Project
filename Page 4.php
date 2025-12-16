@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="Page 4.css">
     <link rel="stylesheet" href="Navbar.css">
 </head>
-
 <body>
 
 <?php include 'Navbar.php'; ?>
@@ -26,9 +25,9 @@
             <div class="materials-list">
                 <h2 class="section-title">البلاستيك المستخدم</h2>
                 <ul>
-                    <li>بلاستيك المواد الغازية</li>
-                    <li>بلاستيك المعلبات</li>
-                    <li>مواد بلاستيكية أخرى</li>
+                    <li><span class="dot"></span> بلاستيك المواد الغازية</li>
+                    <li><span class="dot"></span> بلاستيك المعلبات</li>
+                    <li><span class="dot"></span> المواد البلاستيكية الأخرى</li>
                 </ul>
             </div>
         </div>
@@ -37,15 +36,13 @@
             <h4 class="note-head">ابدأ الهدف الآن</h4>
 
             <div class="goal-box">
-                <label>عدد الزجاجات</label>
-                <input type="number" id="bottleCount" oninput="calculatePoints()" value="0">
+                <label>العدد المحدد</label>
+                <input type="number" id="bottleCount" oninput="calculatePoints()" placeholder="0">
 
-                <label>النقاط المتوقعة</label>
-                <input type="text" id="pointsResult" readonly value="0">
+                <label>النقاط بعد التبديل</label>
+                <input type="text" id="pointsResult" readonly placeholder="0">
 
-                <button onclick="startGoal()" class="btn-start">
-                    بدء الهدف
-                </button>
+                <button onclick="startGoal()" class="btn-start">ابدأ</button>
             </div>
         </div>
 
@@ -54,9 +51,8 @@
 
 <script>
 function calculatePoints() {
-    const bottles = parseInt(document.getElementById('bottleCount').value) || 0;
-    const points  = Math.floor(bottles / 20) * 100;
-    document.getElementById('pointsResult').value = points;
+    let n = parseInt(document.getElementById('bottleCount').value) || 0;
+    document.getElementById('pointsResult').value = Math.floor(n / 20) * 100;
 }
 
 function startGoal() {
@@ -74,12 +70,12 @@ function startGoal() {
         credentials: 'same-origin',
         body: JSON.stringify({ bottles, points })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
             window.location.href = 'Page 5.php';
         } else {
-            alert(data.message);
+            alert(d.message);
         }
     });
 }
