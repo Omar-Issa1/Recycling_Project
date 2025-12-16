@@ -1,63 +1,78 @@
-<?php
-require_once 'config.php';
-
-if (!isLoggedIn()) {
-    redirect('Page7.php');
-}
-?>
+<?php require_once 'config.php'; ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تحديد الهدف</title>
+    <title>تفاصيل بدل الخردة</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Page 4.css">
     <link rel="stylesheet" href="Navbar.css">
 </head>
+
 <body>
 
 <?php include 'Navbar.php'; ?>
 
 <div class="container main-container">
-    <h3 class="text-center mb-4">حدد هدفك من البلاستيك</h3>
+    <div class="row align-items-start">
 
-    <div class="goal-box mx-auto" style="max-width:400px">
-        <label>عدد الزجاجات</label>
-        <input type="number" id="bottleCount" class="form-control mb-3"
-               oninput="calculatePoints()" min="0">
+        <div class="col-lg-6 right-section">
+            <div class="img-frame">
+                <img src="photo/Photo 1.png" alt="بلاستيك">
+            </div>
 
-        <label>النقاط المتوقعة</label>
-        <input type="text" id="pointsResult" class="form-control mb-3" readonly>
+            <div class="materials-list">
+                <h2 class="section-title">البلاستيك المستخدم</h2>
+                <ul>
+                    <li>بلاستيك المواد الغازية</li>
+                    <li>بلاستيك المعلبات</li>
+                    <li>مواد بلاستيكية أخرى</li>
+                </ul>
+            </div>
+        </div>
 
-        <button onclick="startGoal()" class="btn btn-success w-100">
-            ابدأ الهدف
-        </button>
+        <div class="col-lg-6 left-section">
+            <h4 class="note-head">ابدأ الهدف الآن</h4>
+
+            <div class="goal-box">
+                <label>عدد الزجاجات</label>
+                <input type="number" id="bottleCount" oninput="calculatePoints()" value="0">
+
+                <label>النقاط المتوقعة</label>
+                <input type="text" id="pointsResult" readonly value="0">
+
+                <button onclick="startGoal()" class="btn-start">
+                    بدء الهدف
+                </button>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <script>
 function calculatePoints() {
-    const n = parseInt(document.getElementById('bottleCount').value) || 0;
-    const points = Math.floor(n / 20) * 100;
+    const bottles = parseInt(document.getElementById('bottleCount').value) || 0;
+    const points  = Math.floor(bottles / 20) * 100;
     document.getElementById('pointsResult').value = points;
 }
 
 function startGoal() {
-    const bottles = parseInt(document.getElementById('bottleCount').value) || 0;
-    const points  = parseInt(document.getElementById('pointsResult').value) || 0;
+    const bottles = parseInt(document.getElementById('bottleCount').value);
+    const points  = parseInt(document.getElementById('pointsResult').value);
 
-    if (bottles < 20 || points <= 0) {
-        alert("الحد الأدنى 20 زجاجة");
+    if (points <= 0) {
+        alert("أدخل 20 زجاجة على الأقل");
         return;
     }
 
     fetch('set_goal.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            bottles: bottles,
-            points: points
-        })
+        credentials: 'same-origin',
+        body: JSON.stringify({ bottles, points })
     })
     .then(res => res.json())
     .then(data => {
