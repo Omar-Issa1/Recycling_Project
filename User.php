@@ -8,43 +8,45 @@ class User {
         $this->db = new Database();
     }
 
-    // ✅ LOGIN بدون HASH
+    // ✅ LOGIN (plain password)
     public function login($username, $password) {
 
         $sql = "SELECT user_id, username, password_hash, points, balance
                 FROM user_information
-                WHERE username = :username
-                AND password_hash = :password";
+                WHERE username = :username";
 
         $stmt = $this->db->query($sql, [
-            ':username' => $username,
-            ':password' => $password
+            ':username' => $username
         ]);
 
         $user = $this->db->fetchOne($stmt);
 
         if (!$user) {
-            return ['success' => false, 'message' => 'اسم المستخدم أو كلمة المرور غير صحيحة'];
+            return ['success' => false, 'message' => 'اسم المستخدم غير موجود'];
         }
 
-        // ✅ SESSION
+        // ✅ مقارنة مباشرة
+        if ($password !== $user['password_hash']) {
+            return ['success' => false, 'message' => 'كلمة المرور غير صحيحة'];
+        }
+
         $_SESSION['user_id']  = $user['user_id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['points']   = $user['points'];
         $_SESSION['balance']  = $user['balance'];
 
-        return ['success' => true, 'message' => 'تم تسجيل الدخول بنجاح'];
+        return ['success' => true];
     }
 
-    // ✅ REGISTER بدون HASH
+    // ✅ REGISTER (plain password)
     public function register($username, $password, $email, $phone, $address) {
 
-        $check = $this->db->query(
+        $exists = $this->db->query(
             "SELECT 1 FROM user_information WHERE username = :u",
             [':u' => $username]
-        );
+        )->fetch();
 
-        if ($check->fetch()) {
+        if ($exists) {
             return ['success' => false, 'message' => 'اسم المستخدم موجود بالفعل'];
         }
 
@@ -61,7 +63,7 @@ class User {
             VALUES (:u, :p, :e, :ph, :a, :qr, 0, 0)",
             [
                 ':u'  => $username,
-                ':p'  => $password,   // ✅ plain
+                ':p'  => $password, // 🔥 plain
                 ':e'  => $email,
                 ':ph' => $phone,
                 ':a'  => $address,
@@ -69,6 +71,6 @@ class User {
             ]
         );
 
-        return ['success' => true, 'message' => 'تم إنشاء الحساب بنجاح'];
+        return ['success' => true];
     }
 }
