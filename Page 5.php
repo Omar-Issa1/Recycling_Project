@@ -45,7 +45,7 @@ $goal = $_SESSION['goal'];
         <div class="col-md-6 text-center">
             <div class="circular-progress">
                 <div class="inner-circle">
-                    <img src="photo/image.png" alt="Bottle">
+                    <img src="photo/Page5Photo.png" alt="Bottle">
                 </div>
             </div>
             <div class="mt-3 fw-bold">
