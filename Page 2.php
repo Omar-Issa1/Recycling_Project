@@ -19,7 +19,7 @@
       <div class="col-lg-3 col-md-6 mb-4">
         <div class="custom-card">
           <div class="card-img-container">
-            <img src="PHOTO/Photo 4.png" alt="الزجاج المكسر">
+            <img src="/photo/Photo 4.png" alt="الزجاج المكسر">
           </div>
           <h3 class="card-title">الزجاج المكسر</h3>
           <ul class="card-details">
@@ -27,13 +27,13 @@
             <li>خصومات وعروض فقط</li>
             <li>متاح تبديلها من المنزل</li>
           </ul>
-          <a href="#" class="btn-read-more"متاح للان</a>
+          <a href="#" class="btn-read-more">متاح للان</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 mb-4">
         <div class="custom-card card-highlight">
           <div class="card-img-container">
-            <img src="PHOTO/Photo 1.png" alt="البلاستيك المستخدم">
+            <img src="/photo/Photo 1.png" alt="البلاستيك المستخدم">
           </div>
           <h3 class="card-title">البلاستيك المستخدم</h3>
           <ul class="card-details">
@@ -47,7 +47,7 @@
       <div class="col-lg-3 col-md-6 mb-4">
         <div class="custom-card">
           <div class="card-img-container">
-            <img src="PHOTO/Photo 2.png" alt="الصفيح">
+            <img src="/photo/Photo 2.png" alt="الصفيح">
           </div>
           <h3 class="card-title">الصفيح (الكانز)</h3>
           <ul class="card-details">
@@ -61,7 +61,7 @@
       <div class="col-lg-3 col-md-6 mb-4">
         <div class="custom-card">
           <div class="card-img-container">
-            <img src="PHOTO/Photo 3.png" alt="الالكترونيات">
+            <img src="/photo/Photo 3.png" alt="الالكترونيات">
           </div>
           <h3 class="card-title">الالكترونيات</h3>
           <ul class="card-details">
