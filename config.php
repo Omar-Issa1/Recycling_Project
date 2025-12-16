@@ -1,9 +1,10 @@
 <?php
-define('DB_HOST', 'localhost');
-define('DB_PORT', '5432');
-define('DB_NAME', 'recycling_db'); 
-define('DB_USER', 'postgres'); 
-define('DB_PASS', 'Qwomar123');
+
+define('DB_HOST', getenv('DB_HOST'));
+define('DB_PORT', getenv('DB_PORT'));
+define('DB_NAME', getenv('DB_NAME'));
+define('DB_USER', getenv('DB_USER'));
+define('DB_PASS', getenv('DB_PASSWORD'));
 
 class Database {
     private $conn;
@@ -14,54 +15,45 @@ class Database {
     
     private function connect() {
         try {
-            
-            $dsn = "pgsql:host=".DB_HOST.";port=".DB_PORT.";dbname=".DB_NAME;
+            $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
             $this->conn = new PDO($dsn, DB_USER, DB_PASS);
-            
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
             $this->conn->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
-            
+
         } catch (PDOException $e) {
-            die("خطأ في الاتصال بقاعدة البيانات: " . $e->getMessage());
+            die("خطأ في الاتصال بقاعدة البيانات");
         }
     }
     
     public function getConnection() {
         return $this->conn;
     }
-    
-    public function query($sql, $params = []) {
-        try {
-            $stmt = $this->conn->prepare($sql);
 
-            
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-            
-            $stmt->execute();
-            return $stmt;
-            
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage());
+    public function query($sql, $params = []) {
+        $stmt = $this->conn->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
         }
+        $stmt->execute();
+        return $stmt;
     }
-    
+
     public function fetchAll($stmt) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public function fetchOne($stmt) {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
+
     public function __destruct() {
-        $this->conn = null; 
+        $this->conn = null;
     }
 }
 
 session_start();
+
 
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
