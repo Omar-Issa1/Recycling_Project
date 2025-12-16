@@ -84,7 +84,7 @@
         .then(data => {
             if (data.success) {
                 alert("تم إضافة " + points + " نقطة بنجاح ✅");
-                window.location.href = "Page5.php";
+                window.location.href = "Page 5.php";
             } else {
                 alert(data.message);
             }

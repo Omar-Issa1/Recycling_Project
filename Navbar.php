@@ -11,9 +11,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
         <ul class="nav-links">
             <li><a href="/home.php">الرئيسية</a></li>
-            <li><a href="/Page2.php">الخدمات</a></li>
-            <li><a href="/Page3.php">بدل الخردة</a></li>
-            <li><a href="/Page4.php">النقاط والجوائز</a></li>
+            <li><a href="/Page 2.php">الخدمات</a></li>
+            <li><a href="/Page 3.php">بدل الخردة</a></li>
+            <li><a href="/Page 4.php">النقاط والجوائز</a></li>
             <li><a href="#">الدعم الفني</a></li>
         </ul>
         
