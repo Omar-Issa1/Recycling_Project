@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// ================= DATABASE =================
 class Database {
     private $conn;
 
@@ -18,13 +19,11 @@ class Database {
 
         $db = parse_url($databaseUrl);
 
-        $host = $db['host'] ?? null;
-        $user = $db['user'] ?? null;
-        $pass = $db['pass'] ?? null;
+        $host   = $db['host'] ?? null;
+        $user   = $db['user'] ?? null;
+        $pass   = $db['pass'] ?? null;
         $dbname = isset($db['path']) ? ltrim($db['path'], '/') : null;
-
-        // ✅ fallback للـ port
-        $port = $db['port'] ?? 5432;
+        $port   = $db['port'] ?? 5432; // fallback
 
         if (!$host || !$user || !$dbname) {
             die('Invalid DATABASE_URL');
@@ -34,10 +33,11 @@ class Database {
 
         try {
             $this->conn = new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
         } catch (PDOException $e) {
-            die("DB CONNECTION FAILED");
+            die('DB CONNECTION FAILED');
         }
     }
 
@@ -51,14 +51,20 @@ class Database {
     }
 
     public function fetchOne($stmt) {
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch();
     }
 
     public function fetchAll($stmt) {
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 }
 
+// ================= HELPERS =================
 function sanitize($data) {
     return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+}
+
+function redirect($url) {
+    header("Location: $url");
+    exit;
 }
