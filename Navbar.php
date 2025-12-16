@@ -26,8 +26,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="user-icon"><img src="photo/User Icon.png" alt="user icon"></div>
                 </div>
             <?php else: ?>
-                <button onclick="window.location.href='Page 7.php'" class="btn btn-outline-success">تسجيل دخول</button>
-                <button onclick="window.location.href='Page 6.php'" class="btn btn-success">حساب جديد</button>
+                <button onclick="window.location.href='Page7.php'" class="btn btn-outline-success">تسجيل دخول</button>
+                <button onclick="window.location.href='Page6.php'" class="btn btn-success">حساب جديد</button>
                 <div class="user-icon"><img src="photo/User Icon.png" alt="user icon"></div>
             <?php endif; ?>
         </div>

@@ -4,7 +4,7 @@ require_once 'Material.php';
 // check login
 if (!isLoggedIn()) {
     $_SESSION['error'] = 'يجب تسجيل الدخول أولاً';
-    redirect('Page 7.php');
+    redirect('Page7.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
