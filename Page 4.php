@@ -72,17 +72,27 @@
     }
 
     function startGoal() {
-        let points = document.getElementById('pointsResult').value;
+    let points = parseInt(document.getElementById('pointsResult').value);
 
-        if (points > 0) {
-            alert("تم بدء الهدف! سيتم إضافة " + points + " نقطة إلى رصيدك.");
-
-            window.location.href = "Page 5.php";
-        } else {
-            alert("الرجاء إدخال عدد صحيح من الزجاجات (على الأقل 20).");
-        }
+    if (points > 0) {
+        fetch('add_points.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ points: points })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("تم إضافة " + points + " نقطة بنجاح ✅");
+                window.location.href = "Page5.php";
+            } else {
+                alert(data.message);
+            }
+        });
+    } else {
+        alert("أدخل 20 زجاجة على الأقل");
     }
-
+}
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
