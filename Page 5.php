@@ -59,7 +59,7 @@ $goal = $_SESSION['goal'];
 
 <script>
 let count = 0;
-const max = <?php echo $goal['bottles']; ?>;
+const max = <?php echo (int)$goal['bottles']; ?>;
 
 function change(v) {
     count += v;
@@ -78,17 +78,25 @@ function finishGoal() {
         method: 'POST',
         credentials: 'same-origin'
     })
-    .then(r => r.json())
-    .then(d => {
-        if (d.success) {
-            alert("تم إضافة النقاط ✅");
-            location.href = 'home.php';
-        } else {
-            alert(d.message);
+    .then(res => res.text()) // 👈 مهم
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+
+            if (data.success) {
+                alert("تم إضافة النقاط ✅");
+                window.location.href = 'home.php';
+            } else {
+                alert(data.message || 'حدث خطأ');
+            }
+        } catch (e) {
+            console.error(text);
+            alert('خطأ غير متوقع (راجع Console)');
         }
     });
 }
 </script>
+
 
 </body>
 </html>
