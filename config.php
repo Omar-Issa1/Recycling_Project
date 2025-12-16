@@ -3,7 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ================= DATABASE =================
 class Database {
     private $conn;
 
@@ -23,7 +22,7 @@ class Database {
         $user   = $db['user'] ?? null;
         $pass   = $db['pass'] ?? null;
         $dbname = isset($db['path']) ? ltrim($db['path'], '/') : null;
-        $port   = $db['port'] ?? 5432; // fallback
+        $port   = $db['port'] ?? 5432;
 
         if (!$host || !$user || !$dbname) {
             die('Invalid DATABASE_URL');
@@ -31,14 +30,9 @@ class Database {
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
 
-        try {
-            $this->conn = new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
-        } catch (PDOException $e) {
-            die('DB CONNECTION FAILED');
-        }
+        $this->conn = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
     }
 
     public function query($sql, $params = []) {
@@ -51,20 +45,24 @@ class Database {
     }
 
     public function fetchOne($stmt) {
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function fetchAll($stmt) {
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
-// ================= HELPERS =================
-function sanitize($data) {
-    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+/* ✅ helpers */
+function isLoggedIn() {
+    return isset($_SESSION['user_id']);
 }
 
 function redirect($url) {
     header("Location: $url");
     exit;
+}
+
+function sanitize($data) {
+    return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
 }
