@@ -20,7 +20,6 @@ require_once 'config.php';
 
   <h1 class="auth-title">تسجيل الدخول للحساب</h1>
 
-  <!-- ✅ FORM حقيقي -->
   <form class="auth-card" method="POST" action="login_handler.php">
 
     <label>اسم المستخدم</label>

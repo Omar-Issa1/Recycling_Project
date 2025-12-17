@@ -25,9 +25,7 @@ if ($amount > $_SESSION['points']) {
 
 $user = new User();
 
-/**
- * كل 100 نقطة = 10 جنيه
- */
+
 if ($type === 'points') {
     $user->updatePoints($_SESSION['user_id'], -$amount);
 

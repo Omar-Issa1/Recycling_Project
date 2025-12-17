@@ -20,14 +20,11 @@ if ($username === '' || $password === '' || $email === '') {
 $user = new User();
 $result = $user->register($username, $password, $email, $phone, $address);
 
-/*
-  ⬇️ حماية 100%
-  حتى لو register رجّعت حاجة ناقصة
-*/
+
 if (is_array($result) && isset($result['success']) && $result['success'] === true) {
 
     $_SESSION['success'] = $result['message'] ?? 'تم إنشاء الحساب بنجاح';
-    redirect('Page7.php'); // صفحة تسجيل الدخول
+    redirect('Page7.php'); 
 
 } else {
 

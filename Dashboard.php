@@ -175,7 +175,6 @@ function editUser(userId) {
   modal.show();
 }
 
-// حفظ التعديلات
 function saveUser() {
   const formData = new FormData();
   formData.append('action', 'update_user');
@@ -204,7 +203,6 @@ function saveUser() {
   });
 }
 
-// حذف مستخدم
 function deleteUser(userId) {
   if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
     return;

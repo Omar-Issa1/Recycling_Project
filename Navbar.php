@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php'; // فيه session_start
+require_once 'config.php'; 
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
 

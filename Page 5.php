@@ -78,7 +78,7 @@ function finishGoal() {
         method: 'POST',
         credentials: 'same-origin'
     })
-    .then(res => res.text()) // 👈 مهم
+    .then(res => res.text()) 
     .then(text => {
         try {
             const data = JSON.parse(text);

@@ -8,7 +8,6 @@ class User {
         $this->db = new Database();
     }
 
-    // ✅ LOGIN (plain password)
     public function login($username, $password) {
 
         $sql = "SELECT user_id, username, password_hash, points, balance
@@ -25,7 +24,6 @@ class User {
             return ['success' => false, 'message' => 'اسم المستخدم غير موجود'];
         }
 
-        // ✅ مقارنة مباشرة
         if ($password !== $user['password_hash']) {
             return ['success' => false, 'message' => 'كلمة المرور غير صحيحة'];
         }
@@ -38,7 +36,6 @@ class User {
         return ['success' => true];
     }
 
-    // ✅ REGISTER (plain password)
     public function register($username, $password, $email, $phone, $address) {
 
         $exists = $this->db->query(
@@ -63,7 +60,7 @@ class User {
             VALUES (:u, :p, :e, :ph, :a, :qr, 0, 0)",
             [
                 ':u'  => $username,
-                ':p'  => $password, // 🔥 plain
+                ':p'  => $password, // plain
                 ':e'  => $email,
                 ':ph' => $phone,
                 ':a'  => $address,
@@ -83,7 +80,6 @@ class User {
         ':user_id' => $user_id
     ]);
 
-    // تحديث السيشن عشان الـ Navbar
     if (isset($_SESSION['points'])) {
         $_SESSION['points'] += $points;
     }

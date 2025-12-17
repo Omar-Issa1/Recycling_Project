@@ -4,7 +4,6 @@ require_once 'config.php';
 class Material {
     private $db;
     
-    // معدلات التحويل
     private $conversion_rates = [
         'plastic' => ['pieces' => 20, 'points' => 100],
         'glass' => ['pieces' => 20, 'points' => 100],

@@ -14,13 +14,11 @@ if (!isset($_SESSION['user_id'], $_SESSION['goal'])) {
 
 $user = new User();
 
-/* إضافة النقاط */
 $user->updatePoints(
     $_SESSION['user_id'],
     $_SESSION['goal']['points']
 );
 
-/* حذف الهدف بعد الانتهاء */
 unset($_SESSION['goal']);
 
 echo json_encode([
