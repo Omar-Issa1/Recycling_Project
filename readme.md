@@ -1,192 +1,179 @@
-# Admin.php
+# Documentation for خردة (Khurda) Application Codebase
 
-This file implements the **Admin** class, which provides all administrative actions for managing users, drivers, and basic statistics for the system. It interacts with the database using the `Database` class.
-
-## Main Functions Provided
-
-| Method                   | Purpose                                                    |
-| ------------------------ | ---------------------------------------------------------- |
-| getAllUsers()            | Retrieves all users.                                       |
-| searchUsers($term)       | Searches users by username or email.                       |
-| updateUser(...)          | Updates user details and returns a status.                 |
-| deleteUser($user_id)     | Deletes a user.                                            |
-| getStatistics()          | Returns summary statistics (users, points, balance, etc.). |
-| getAllDrivers()          | Retrieves all drivers.                                     |
-| addDriver(...)           | Adds a new driver with a QR code.                          |
-| deleteDriver($driver_id) | Deletes a driver.                                          |
-
-### Example: Get All Users
-
-```php
-$admin = new Admin();
-$users = $admin->getAllUsers();
-```
-
-### Example: Update a User
-
-```php
-$result = $admin->updateUser(1, 'username', 'email@example.com', '0123456', 100.0, 200);
-if ($result['success']) {
-    // success logic
-}
-```
-
-### Statistics Overview
-
-- **Total Users:** Count from `user_information`
-- **Total Points:** Sum from `user_information.points`
-- **Total Balance:** Sum from `user_information.balance`
-- **Total Materials:** Count from `material`
-
-### Driver Management
-
-Drivers are managed with unique usernames and QR codes. When a driver is added, a QR code is generated and stored in both `serial_number` and driver's table.
+This documentation describes each PHP and infrastructure file in your recycling/points web application. It includes explanations, flowcharts, class diagrams, and API blocks where relevant.
 
 ---
 
-## Admin Class Structure
+## add_points.php
+
+This API endpoint allows a logged-in user to add points to their account. It requires authentication and expects a JSON payload specifying the number of points to add.
+
+**Features:**
+- Verifies user is logged in (via `$_SESSION['user_id']`)
+- Accepts points to add via JSON POST
+- Updates user points accordingly
+- Returns JSON response
+
+### Add Points API Endpoint
+
+```api
+{
+    "title": "Add Points",
+    "description": "Add points to the currently logged-in user's account.",
+    "method": "POST",
+    "baseUrl": "https://yourdomain.com",
+    "endpoint": "/add_points.php",
+    "headers": [
+        {
+            "key": "Content-Type",
+            "value": "application/json",
+            "required": true
+        }
+    ],
+    "bodyType": "json",
+    "requestBody": "{\n  \"points\": 100\n}",
+    "responses": {
+        "200": {
+            "description": "Points added successfully",
+            "body": "{\n  \"success\": true,\n  \"points\": 200\n}"
+        },
+        "400": {
+            "description": "Invalid points or not logged in",
+            "body": "{\n  \"success\": false,\n  \"message\": \"يجب تسجيل الدخول\"\n}"
+        }
+    }
+}
+```
+
+---
+
+## finish_goal.php
+
+This script is used to finish a recycling "goal" (e.g., collecting a specific number of bottles) and award points to the user.
+
+**Features:**
+- Validates user session and goal existence
+- Adds goal points to user
+- Removes goal from session
+- Returns JSON result
+
+### Finish Goal API Endpoint
+
+```api
+{
+    "title": "Finish Goal",
+    "description": "Mark the current recycling goal as complete and add points to the user.",
+    "method": "POST",
+    "baseUrl": "https://yourdomain.com",
+    "endpoint": "/finish_goal.php",
+    "headers": [
+        {
+            "key": "Content-Type",
+            "value": "application/json",
+            "required": false
+        }
+    ],
+    "bodyType": "none",
+    "responses": {
+        "200": {
+            "description": "Goal finished, points awarded",
+            "body": "{ \"success\": true }"
+        },
+        "400": {
+            "description": "Goal not found or invalid session",
+            "body": "{ \"success\": false, \"message\": \"الجلسة غير صالحة\" }"
+        }
+    }
+}
+```
+
+---
+
+## index.php
+
+A simple entry point that includes the home page. This helps in keeping the main application landing at `home.php`.
+
+```php
+<?php require_once __DIR__ . '/home.php'; 
+```
+
+---
+
+## Admin.php
+
+This file defines the `Admin` class, which encapsulates admin functionality for the application.
+
+### Major Features:
+- List/search/update/delete users
+- Get statistics (users, points, balances, materials)
+- Manage drivers (add, list, delete)
+
+### Admin Class Diagram
 
 ```mermaid
 classDiagram
     class Admin {
-        - Database db
-        + __construct()
-        + getAllUsers()
-        + searchUsers(search_term)
-        + updateUser(user_id, username, email, phone, balance, points)
-        + deleteUser(user_id)
-        + getStatistics()
-        + getAllDrivers()
-        + addDriver(username, password, name, phone, email)
-        + deleteDriver(driver_id)
-        - getNextDriverId()
-        - generateQRCode()
+        +__construct()
+        +getAllUsers()
+        +searchUsers(search_term)
+        +updateUser(user_id, username, email, phone, balance, points)
+        +deleteUser(user_id)
+        +getStatistics()
+        +getAllDrivers()
+        +addDriver(username, password, name, phone, email)
+        +deleteDriver(driver_id)
+        -getNextDriverId()
+        -generateQRCode()
+        -db : Database
     }
 ```
 
----
+### Notable Methods
 
-# logout.php
-
-This script logs out the current user by destroying the session and redirecting to the home page.
-
-- **Session is destroyed**
-- **Redirects to:** `Page 1.php`
-
-```php
-session_destroy();
-redirect('Page 1.php');
-```
+- **getAllUsers()**: Fetches all users ordered by latest.
+- **searchUsers($term)**: Searches by username or email.
+- **updateUser(...)**: Updates a user's profile, balance, and points.
+- **deleteUser($id)**: Removes a user.
+- **getStatistics()**: Returns total users, points, balances, and materials.
+- **getAllDrivers()/addDriver()/deleteDriver()**: Manage drivers for material pickup.
 
 ---
 
-# Dashboard.php
+## dashboard_backend.php
 
-This is the **Admin Dashboard** page. It displays various statistics and allows the admin to manage users through a table with search, edit, and delete functionalities.
+Acts as a backend controller for AJAX requests from the admin dashboard. Handles user management and statistics.
 
-- **Displays:** user statistics, user list
-- **Edit/Delete:** In-table actions with modal for editing
-- **Search:** By username or email (client-side)
+**Features:**
+- POST: update/delete/search user
+- GET: fetch all users/statistics
+- Returns JSON responses
 
-### Key Features
-
-- Bootstrap based RTL design
-- JavaScript for modal handling and AJAX actions
-- Fetches data from `dashboard_backend.php`
-
----
-
-# exchange_handler.php
-
-Handles **material exchange** by the user (either for points or money).
-
-- **Checks login**
-- **Reads:** material type, quantity, exchange type (points/money)
-- **Delegates:** to `Material` methods (`exchangeForPoints` / `exchangeForMoney`)
-- **Sets session messages** (success/error)
-- **Redirects** according to the result
-
-### Process Flow
-
-```mermaid
-flowchart TD
-    A[User Submits Exchange Form] --> B{Logged In?}
-    B -- No --> C[Redirect to Page 7.php]
-    B -- Yes --> D[Validate Input]
-    D -- Invalid --> E[Redirect to Page 4.php with Error]
-    D -- Valid --> F[Call Material::exchangeForPoints/ForMoney]
-    F -- Success --> G[Set Success Message] --> H[Redirect to Page 5.php]
-    F -- Fail --> I[Set Error Message] --> J[Redirect to Page 4.php]
-```
-
----
-
-# login_handler.php
-
-Processes the **login form** submission.
-
-- **Validates** username and password
-- **Delegates** login logic to `User` class
-- **Sets session messages** (success/error)
-- **Redirects** according to the result
-
-### Login Process
-
-```mermaid
-flowchart TD
-    A[POST Login Form] --> B[Validate Input]
-    B -- Invalid --> C[Redirect to Page 7.php with Error]
-    B -- Valid --> D[User login]
-    D -- Success --> E[Redirect to Page 1.php]
-    D -- Fail --> F[Redirect to Page 7.php with Error]
-```
-
----
-
-# dashboard_backend.php
-
-Acts as a backend controller for the admin dashboard. Handles AJAX requests for user management.
-
-### Handles
-
-| Action (POST) | Description                |
-| ------------- | -------------------------- |
-| update_user   | Updates user with new data |
-| delete_user   | Deletes a user             |
-| search_users  | Searches for users         |
-
-| Action (GET)   | Description               |
-| -------------- | ------------------------- |
-| get_all_users  | Returns list of all users |
-| get_statistics | Returns system statistics |
-
-### Example: Update User API
+### API Endpoints
 
 #### Update User
 
 ```api
 {
     "title": "Update User",
-    "description": "Update a user's data (admin only)",
+    "description": "Update a specific user's information as admin.",
     "method": "POST",
     "baseUrl": "https://yourdomain.com",
     "endpoint": "/dashboard_backend.php",
     "headers": [],
-    "queryParams": [],
-    "bodyType": "form",
     "formData": [
-        {"key": "action", "value": "update_user", "required": true},
-        {"key": "user_id", "value": "User ID", "required": true},
-        {"key": "username", "value": "Username", "required": true},
-        {"key": "email", "value": "Email", "required": true},
-        {"key": "phone", "value": "Phone", "required": false},
-        {"key": "balance", "value": "Balance", "required": false},
-        {"key": "points", "value": "Points", "required": false}
+        { "key": "action", "value": "update_user", "required": true },
+        { "key": "user_id", "value": "User ID", "required": true },
+        { "key": "username", "value": "New username", "required": true },
+        { "key": "email", "value": "New email", "required": true },
+        { "key": "phone", "value": "Phone", "required": false },
+        { "key": "balance", "value": "Balance", "required": false },
+        { "key": "points", "value": "Points", "required": false }
     ],
+    "bodyType": "form",
     "responses": {
         "200": {
-            "description": "Success or failure",
-            "body": "{\n  \"success\": true,\n  \"message\": \"تم تحديث المستخدم بنجاح\"\n}"
+            "description": "Update successful",
+            "body": "{ \"success\": true, \"message\": \"تم تحديث المستخدم بنجاح\" }"
         }
     }
 }
@@ -197,21 +184,20 @@ Acts as a backend controller for the admin dashboard. Handles AJAX requests for 
 ```api
 {
     "title": "Delete User",
-    "description": "Delete a user by ID (admin only)",
+    "description": "Delete a user from the system.",
     "method": "POST",
     "baseUrl": "https://yourdomain.com",
     "endpoint": "/dashboard_backend.php",
     "headers": [],
-    "queryParams": [],
-    "bodyType": "form",
     "formData": [
-        {"key": "action", "value": "delete_user", "required": true},
-        {"key": "user_id", "value": "User ID", "required": true}
+        { "key": "action", "value": "delete_user", "required": true },
+        { "key": "user_id", "value": "User ID", "required": true }
     ],
+    "bodyType": "form",
     "responses": {
         "200": {
-            "description": "Success or failure",
-            "body": "{\n  \"success\": true,\n  \"message\": \"تم حذف المستخدم بنجاح\"\n}"
+            "description": "User deleted",
+            "body": "{ \"success\": true, \"message\": \"تم حذف المستخدم بنجاح\" }"
         }
     }
 }
@@ -222,21 +208,20 @@ Acts as a backend controller for the admin dashboard. Handles AJAX requests for 
 ```api
 {
     "title": "Search Users",
-    "description": "Search users by term (admin only)",
+    "description": "Search users by username or email.",
     "method": "POST",
     "baseUrl": "https://yourdomain.com",
     "endpoint": "/dashboard_backend.php",
     "headers": [],
-    "queryParams": [],
-    "bodyType": "form",
     "formData": [
-        {"key": "action", "value": "search_users", "required": true},
-        {"key": "search_term", "value": "Search term", "required": true}
+        { "key": "action", "value": "search_users", "required": true },
+        { "key": "search_term", "value": "Search term", "required": true }
     ],
+    "bodyType": "form",
     "responses": {
         "200": {
-            "description": "List of users",
-            "body": "{\n  \"success\": true,\n  \"users\": [ ... ]\n}"
+            "description": "Users found",
+            "body": "{ \"success\": true, \"users\": [...] }"
         }
     }
 }
@@ -247,19 +232,16 @@ Acts as a backend controller for the admin dashboard. Handles AJAX requests for 
 ```api
 {
     "title": "Get All Users",
-    "description": "Returns all users (admin only)",
+    "description": "Fetch all users for admin dashboard.",
     "method": "GET",
     "baseUrl": "https://yourdomain.com",
     "endpoint": "/dashboard_backend.php?action=get_all_users",
     "headers": [],
-    "queryParams": [
-        {"key": "action", "value": "get_all_users", "required": true}
-    ],
     "bodyType": "none",
     "responses": {
         "200": {
-            "description": "List of users",
-            "body": "{\n  \"success\": true,\n  \"users\": [ ... ]\n}"
+            "description": "Users list",
+            "body": "{ \"success\": true, \"users\": [...] }"
         }
     }
 }
@@ -270,19 +252,16 @@ Acts as a backend controller for the admin dashboard. Handles AJAX requests for 
 ```api
 {
     "title": "Get Statistics",
-    "description": "Returns admin dashboard statistics",
+    "description": "Get dashboard statistics (users, points, balance, materials).",
     "method": "GET",
     "baseUrl": "https://yourdomain.com",
     "endpoint": "/dashboard_backend.php?action=get_statistics",
     "headers": [],
-    "queryParams": [
-        {"key": "action", "value": "get_statistics", "required": true}
-    ],
     "bodyType": "none",
     "responses": {
         "200": {
-            "description": "Statistics object",
-            "body": "{\n  \"success\": true,\n  \"statistics\": { ... }\n}"
+            "description": "Statistics",
+            "body": "{ \"success\": true, \"statistics\": { \"total_users\": 100, \"total_points\": 5000, ... } }"
         }
     }
 }
@@ -290,218 +269,398 @@ Acts as a backend controller for the admin dashboard. Handles AJAX requests for 
 
 ---
 
-# config.php
+## Dockerfile
 
-Holds all **configuration** and utility functions for the application.
+Defines the Docker image for deploying the PHP application.
 
-## Key Elements
+**Key Steps:**
+- Uses PHP 8.2 with Apache
+- Installs PostgreSQL extensions
+- Copies app files to `/var/www/html`
+- Ensures correct permissions
 
-- **Database connection (PDO, PostgreSQL)**
-- **Session management**
-- **Utility functions:** `isLoggedIn`, `isAdmin`, `redirect`, `sanitize`
-
-### Database Helper Functions
-
-- `query($sql, $params = [])`: Prepares & executes a query.
-- `fetchAll($stmt)`: Fetches all results.
-- `fetchOne($stmt)`: Fetches single record.
-
----
-
-# Nav Register.php
-
-Provides a **navigation bar** for registration and login pages.
-
-- **Logo** on the left
-- **Register** and **Login** buttons on the right
-
----
-
-# Navbar.php
-
-A dynamic **navigation bar** for the main website.
-
-- **Shows menu links**
-- **If logged in:** Displays username, points, logout button
-- **If not logged in:** Shows login and register buttons
-
----
-
-# Material.php
-
-Implements the **Material** class for managing materials and exchange logic.
-
-## Features
-
-- **Conversion rates** defined for each material type
-- **addMaterial():** Adds new material to the database with an optional QR code
-- **calculatePoints():** Calculates points for a given material and quantity
-- **exchangeForPoints():** Exchanges material for points (updates user)
-- **exchangeForMoney():** Exchanges material for money (updates user)
-- **getAllMaterials(), getMaterial():** Fetch materials from the database
-
-### Material Exchange Logic
-
-- Each material type has a mapping for number of pieces per 100 points.
-- Exchange for money: 100 points = 10 units of currency.
-
-#### Example Conversion Table
-
-| Material    | Pieces per Exchange | Points per Exchange | Money Rate      |
-| ----------- | ------------------- | ------------------- | --------------- |
-| plastic     | 20                  | 100                 | 100 pts = 10 LE |
-| glass       | 20                  | 100                 | 100 pts = 10 LE |
-| metal       | 20                  | 700                 | 100 pts = 10 LE |
-| electronics | 20                  | 100                 | 100 pts = 10 LE |
-
----
-
-# Page 1.php
-
-This is the **home page** of the web app.
-
-- **Features:** Hero section, service highlights
-- **Includes:** Main `Navbar.php`
-- **Call-to-action:** Buttons for login and joining the team
-
----
-
-# Page 2.php
-
-Presents all **available services** and material categories.
-
-- **Material Cards:** Glass, plastic, metal, electronics
-- **Points/discounts** info displayed for each
-- **Action:** Read more/available buttons
-
----
-
-# Page 3.php
-
-Landing page for **starting the recycling/exchange process**.
-
-- **Material Cards** with info about points and redemption
-- **Buttons** to start the process (proceeds to Page 4)
-
----
-
-# Page 5.php
-
-**Track Exchange** page (UX for incrementing item count and choosing exchange type).
-
-- **Counter** for material quantity
-- **Actions:** Exchange for points or money
-- **Progress visualization** and feedback
-
----
-
-# scc.SQL
-
-Defines the **database schema** for the application in PostgreSQL.
-
-## Main Tables
-
-| Table            | Purpose                                    |
-| ---------------- | ------------------------------------------ |
-| serial_number    | Stores unique QR codes for items/drivers   |
-| user_information | Stores user data, balance, points, QR code |
-| material         | Stores materials submitted for recycling   |
-| factory          | Stores factories with QR code              |
-| driver           | Stores driver data and QR code             |
-
-### Schema Relationships
-
-```mermaid
-erDiagram
-    USER_INFORMATION {
-        int user_id PK
-        varchar username
-        varchar password_hash
-        varchar user_email
-        varchar user_phone
-        varchar user_address
-        decimal balance
-        int points
-        bigint Qr_code FK
-    }
-    MATERIAL {
-        int material_id PK
-        varchar material_type
-        int material_quantity
-        bigint Qr_code FK
-    }
-    DRIVER {
-        int driver_id PK
-        varchar username
-        varchar password_hash
-        varchar driver_name
-        varchar driver_phone
-        varchar driver_email
-        bigint Qr_code FK
-    }
-    FACTORY {
-        int factory_id PK
-        varchar factory_name
-        varchar location
-        bigint Qr_code FK
-    }
-    SERIAL_NUMBER {
-        bigint Qr_code PK
-    }
-
-    USER_INFORMATION }o--|| SERIAL_NUMBER : has
-    MATERIAL }o--|| SERIAL_NUMBER : has
-    DRIVER }o--|| SERIAL_NUMBER : has
-    FACTORY }o--|| SERIAL_NUMBER : has
+```Dockerfile
+FROM php:8.2-apache
+RUN apt-get update && apt-get install -y \
+  libpq-dev \
+  && docker-php-ext-install pdo_pgsql pgsql \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html
 ```
 
 ---
 
-# register_handler.php
+## exchange_handler.php
 
-Handles **user registration** POST requests.
+Handles the process where users exchange recyclable materials for points or money.
 
-- **Validates**: all required fields, email format, password length
-- **Sanitizes** input
-- **Delegates** to `User` class to create account
-- **On success:** Redirects to login, sets success message
-- **On error:** Redirects back to registration, sets error message
+**Features:**
+- Requires authentication
+- Accepts POST with `material_type`, `quantity`, `exchange_type`
+- Validates input
+- Processes exchange via `Material` class
+- Sets success/error messages in session and redirects
+
+### High-level Exchange Flow
+
+```mermaid
+flowchart TD
+    A[User submits exchange form] --> B[exchange_handler.php]
+    B --> C{Is user logged in?}
+    C -- No --> D[Redirect to login Page7.php]
+    C -- Yes --> E{Valid material data?}
+    E -- No --> F[Redirect to Page 4.php with error]
+    E -- Yes --> G{Exchange type: points or money}
+    G -- Points --> H[Material exchangeForPoints]
+    G -- Money --> I[Material exchangeForMoney]
+    H & I --> J{Success?}
+    J -- Yes --> K[Set success message, redirect Page 5.php]
+    J -- No --> L[Set error message, redirect Page 4.php]
+```
 
 ---
 
-# Page 7.php
+## config.php
 
-**Login page** for users.
+Central configuration and utility file.
 
-- **Includes:** Nav Register bar
-- **Fields:** Username, password
-- **Other login options:** Google, Facebook
-- **Button triggers login (currently just redirects)**
+**Main Contents:**
+- Database connection via PDO to PostgreSQL (using `DATABASE_URL`)
+- Helper functions: `isLoggedIn`, `redirect`, `sanitize`
+
+### Database Connection
+
+Creates a `Database` object for PDO access and query execution. Connection details are parsed from the `DATABASE_URL` environment variable.
 
 ---
 
-# Page 4.php
+## Dashboard.php
 
-**Exchange Details** page for a specific material (plastic).
+The admin dashboard UI.
 
-- **Material info and notes**
-- **User inputs quantity; points auto-calculated**
-- **Start goal** button validates and redirects to tracking page (Page 5)
+**Description:**
+- Loads user and statistics data from `dashboard_backend.php`
+- Displays statistics and all users in a table
+- Supports search/filter, edit, and delete operations via AJAX
+
+---
+
+## home.php
+
+Main home/landing page for the site.
+
+**Features:**
+- Shows main offer (exchange scrap for points/money)
+- Large hero section, features, and call-to-action buttons
+- Navigation bar included
+
+---
+
+## login_handler.php
+
+Handles POST login requests.
+
+**Features:**
+- Validates input
+- Uses the `User` class to authenticate
+- On success: redirects to home
+- On failure: sets error and redirects to login
+
+### Login API
+
+```api
+{
+    "title": "User Login",
+    "description": "Authenticate user and start session.",
+    "method": "POST",
+    "baseUrl": "https://yourdomain.com",
+    "endpoint": "/login_handler.php",
+    "headers": [
+        { "key": "Content-Type", "value": "application/x-www-form-urlencoded", "required": true }
+    ],
+    "formData": [
+        { "key": "username", "value": "User's username", "required": true },
+        { "key": "password", "value": "User's password", "required": true }
+    ],
+    "bodyType": "form",
+    "responses": {
+        "302": {
+            "description": "Redirect on success or failure"
+        }
+    }
+}
+```
+
+---
+
+## logout.php
+
+Logs out the user by destroying the session and redirecting to index.
+
+---
+
+## Navbar.php
+
+Reusable navigation bar component.
+
+**Features:**
+- Shows links to major pages
+- Displays user info and points if logged in
+- Login/Register and Logout buttons
+
+---
+
+## Material.php
+
+Defines the `Material` class, which manages recyclable materials and exchanges.
+
+### Main Features:
+- Add material record (with optional QR code)
+- Calculate points from material and quantity
+- Exchange material for points or money
+- List materials
+
+### Conversion Rates Table
+
+| Material     | Pieces/Set | Points/Set |
+|--------------|------------|------------|
+| plastic      | 20         | 100        |
+| glass        | 20         | 100        |
+| metal        | 20         | 700        |
+| electronics  | 20         | 100        |
+
+### Material Class Diagram
+
+```mermaid
+classDiagram
+    class Material {
+        +addMaterial(material_type, material_quantity, qr_code)
+        +calculatePoints(material_type, quantity)
+        +exchangeForPoints(user_id, material_type, quantity)
+        +exchangeForMoney(user_id, material_type, quantity)
+        +getAllMaterials()
+        +getMaterial(material_id)
+        +getConversionRates()
+        -getNextMaterialId()
+        -generateQRCode()
+        -db : Database
+        -conversion_rates : array
+    }
+```
+
+---
+
+## Page 3.php
+
+Displays the available material types for exchange, with a focus on electronics, cans, and plastic. Only plastic exchange is enabled and links to Page 4.
+
+---
+
+## Page 2.php
+
+Shows the various recycling services (glass, plastic, cans, electronics) and their rates. Only plastic exchange is available.
+
+---
+
+## Nav Register.php
+
+A minimal navigation bar for authentication pages, offering quick access to register or login.
+
+---
+
+## Page 5.php
+
+Goal tracking page, allowing the user to increment a counter as they recycle bottles and complete a goal.
+
+**Features:**
+- Displays recycling goal and progress
+- Button to finish and claim points (triggers `finish_goal.php`)
+
+---
+
+## Page6.php
+
+Registration page for creating a new user account.
+
+**Features:**
+- Registration form with username, email, phone, address, and password
+- Shows success/error messages from session
+- POSTs to `register_handler.php`
+
+---
+
+## Page 4.php
+
+Details about plastic recycling and goal creation.
+
+**Features:**
+- Shows info about plastic recycling
+- Allows user to set a goal (# bottles)
+- Calculates points in real-time
+- POSTs to `set_goal.php` via JavaScript
+
+---
+
+## Page7.php
+
+Login page for users.
+
+**Features:**
+- Simple login form (username, password)
+- Form submits to `login_handler.php`
+
+---
+
+## register_handler.php
+
+Handles registration form submissions.
+
+**Features:**
+- Validates input
+- Registers user with `User` class
+- Sets success/error in session
+- Redirects to login or registration form based on result
+
+---
+
+## set_goal.php
+
+API endpoint to set a recycling goal for the user.
+
+**Features:**
+- Requires authentication
+- Expects JSON input with `bottles` and `points`
+- Stores goal in user session
+- Returns JSON success
+
+### Set Goal API
+
+```api
+{
+    "title": "Set Recycling Goal",
+    "description": "Set a new goal (number of bottles and corresponding points) for the logged-in user.",
+    "method": "POST",
+    "baseUrl": "https://yourdomain.com",
+    "endpoint": "/set_goal.php",
+    "headers": [
+        { "key": "Content-Type", "value": "application/json", "required": true }
+    ],
+    "bodyType": "json",
+    "requestBody": "{ \"bottles\": 40, \"points\": 200 }",
+    "responses": {
+        "200": {
+            "description": "Goal set successfully",
+            "body": "{ \"success\": true }"
+        },
+        "400": {
+            "description": "Not logged in",
+            "body": "{ \"success\": false, \"message\": \"يجب تسجيل الدخول\" }"
+        }
+    }
+}
+```
+
+---
+
+## redeem.php
+
+API endpoint to redeem points for either money or other rewards.
+
+**Features:**
+- Requires authentication
+- Expects JSON with `type` (points/money) and `amount`
+- Validates points and balance
+- Updates user points/balance accordingly
+- Returns JSON with updated values
+
+### Redeem API
+
+```api
+{
+    "title": "Redeem Points",
+    "description": "Redeem user points for rewards or money.",
+    "method": "POST",
+    "baseUrl": "https://yourdomain.com",
+    "endpoint": "/redeem.php",
+    "headers": [
+        { "key": "Content-Type", "value": "application/json", "required": true }
+    ],
+    "bodyType": "json",
+    "requestBody": "{ \"type\": \"money\", \"amount\": 200 }",
+    "responses": {
+        "200": {
+            "description": "Redemption successful, returns new points/balance",
+            "body": "{ \"success\": true, \"points\": 500, \"balance\": 40 }"
+        },
+        "400": {
+            "description": "Invalid or insufficient points",
+            "body": "{ \"success\": false, \"message\": \"نقاطك غير كافية\" }"
+        }
+    }
+}
+```
+
+---
+
+## User.php
+
+Defines the `User` class for user authentication, registration, and updating points.
+
+### Main Methods
+
+- **login($username, $password)**: Authenticates user and sets session.
+- **register($username, $password, $email, $phone, $address)**: Registers new user, generates QR code.
+- **updatePoints($user_id, $points)**: Updates user's points and session.
+
+### User Class Diagram
+
+```mermaid
+classDiagram
+    class User {
+        +__construct()
+        +login(username, password)
+        +register(username, password, email, phone, address)
+        +updatePoints(user_id, points)
+        -db : Database
+    }
+```
+
+---
+
+## reset_db.php
+
+**Utility script to reset the database.**
+
+- Deletes all users and serial numbers from the PostgreSQL database.
+- Intended for development/testing only.
+
+```php
+<?php
+require_once 'config.php';
+$db = new Database();
+$db->query("DELETE FROM user_information");
+$db->query("DELETE FROM serial_number");
+echo "DB RESET DONE";
+```
 
 ---
 
 ```card
 {
   "title": "Security Notice",
-  "content": "Always sanitize user inputs and validate sessions to prevent unauthorized access and SQL injection."
+  "content": "Plain-text password handling in the current User class is insecure. Implement password hashing for all authentication and storage."
 }
 ```
-
 ---
 
 ```card
 {
-  "title": "Database Best Practices",
-  "content": "Keep all schema changes in version control for reliable deployments and troubleshooting."
+  "title": "Session-Based APIs",
+  "content": "Most endpoints rely on PHP sessions for authentication. Ensure session security and HTTPS for all API access."
 }
 ```
+---
+
+This documentation covers all files, their purpose, endpoints, and class relationships. For further improvements, consider implementing proper password hashing and more robust error handling.
